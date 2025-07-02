@@ -678,56 +678,48 @@ if user_role == 'Admin':
         with col2:
             if confirm_text == "DELETE ALL DATA":
                 if st.button("🗑️ DELETE ALL DATA", type="primary"):
-                    # Clear all data from database
+                    # Clear all data from database using direct SQL execution
                     try:
-                        from utils.database_data_manager import get_db_manager
-                        from sqlalchemy import text
+                        import subprocess
+                        import os
                         
-                        db_manager = get_db_manager()
-                        
-                        # Delete all data from database tables for the current hotel
-                        table_names = [
-                            'sales',
-                            'expenditures', 
-                            'room_services',
-                            'complementary_rooms',
-                            'advance_payments',
-                            'outstanding_dues',
-                            'uploaded_bills',
-                            'cash_handovers',
-                            'account_handovers',
-                            'bad_debts',
-                            'discounts',
-                            'restaurant'
-                        ]
-
-                        deleted_count = 0
-                        for table_name in table_names:
-                            # Execute SQL to delete all records for the current hotel
-                            query = f"DELETE FROM {table_name} WHERE hotel = %s"
+                        # Use the execute_sql_tool approach through environment
+                        database_url = os.environ.get('DATABASE_URL')
+                        if database_url:
+                            # Create SQL commands to delete all data for current hotel
+                            sql_commands = f"""
+                            DELETE FROM sales WHERE hotel = '{selected_hotel}';
+                            DELETE FROM expenditures WHERE hotel = '{selected_hotel}';
+                            DELETE FROM room_services WHERE hotel = '{selected_hotel}';
+                            DELETE FROM complementary_rooms WHERE hotel = '{selected_hotel}';
+                            DELETE FROM advance_payments WHERE hotel = '{selected_hotel}';
+                            DELETE FROM outstanding_dues WHERE hotel = '{selected_hotel}';
+                            DELETE FROM uploaded_bills WHERE hotel = '{selected_hotel}';
+                            DELETE FROM cash_handovers WHERE hotel = '{selected_hotel}';
+                            DELETE FROM account_handovers WHERE hotel = '{selected_hotel}';
+                            DELETE FROM bad_debts WHERE hotel = '{selected_hotel}';
+                            DELETE FROM discounts WHERE hotel = '{selected_hotel}';
+                            DELETE FROM restaurant WHERE hotel = '{selected_hotel}';
+                            UPDATE rooms SET status = 'Available', customer_name = NULL, check_in_date = NULL, check_out_date = NULL, phone = NULL, address = NULL WHERE hotel = '{selected_hotel}';
+                            """
+                            
+                            # Execute SQL commands using psql
                             try:
-                                with db_manager.engine.connect() as conn:
-                                    result = conn.execute(text(query), (selected_hotel,))
-                                    conn.commit()
-                                    deleted_count += result.rowcount if hasattr(result, 'rowcount') else 0
-                                    print(f"Deleted all {table_name} records for {selected_hotel}")
-                            except Exception as e:
-                                print(f"Error deleting {table_name}: {e}")
-                                continue
-
-                        # Also reset rooms to available status
-                        rooms_query = "UPDATE rooms SET status = 'Available', customer_name = NULL, check_in_date = NULL, check_out_date = NULL, phone = NULL, address = NULL WHERE hotel = %s"
-                        try:
-                            with db_manager.engine.connect() as conn:
-                                conn.execute(text(rooms_query), (selected_hotel,))
-                                conn.commit()
-                                print(f"Reset all rooms for {selected_hotel}")
-                        except Exception as e:
-                            print(f"Error resetting rooms: {e}")
-
-                        st.success(f"✅ All data has been successfully deleted from database! Deleted records from {len(table_names)} tables.")
-                        st.balloons()
-                        st.rerun()
+                                result = subprocess.run(
+                                    ['psql', database_url, '-c', sql_commands],
+                                    capture_output=True,
+                                    text=True,
+                                    check=True
+                                )
+                                print(f"Database deletion successful: {result.stdout}")
+                                st.success(f"✅ All data has been successfully deleted from database for {selected_hotel}!")
+                                st.balloons()
+                                st.rerun()
+                            except subprocess.CalledProcessError as e:
+                                st.error(f"Error executing deletion: {e.stderr}")
+                                print(f"SQL execution error: {e}")
+                        else:
+                            st.error("Database connection not available")
                         
                     except Exception as e:
                         st.error(f"Error deleting data from database: {e}")
