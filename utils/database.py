@@ -149,8 +149,16 @@ class DatabaseManager:
                     handover_columns = [
                         "ALTER TABLE cash_handovers ADD COLUMN IF NOT EXISTS handover_date DATE",
                         "ALTER TABLE cash_handovers ADD COLUMN IF NOT EXISTS notes TEXT",
+                        "ALTER TABLE cash_handovers ADD COLUMN IF NOT EXISTS received_by VARCHAR(100)",
+                        "ALTER TABLE cash_handovers ADD COLUMN IF NOT EXISTS handed_by VARCHAR(100)",
+                        "ALTER TABLE cash_handovers ADD COLUMN IF NOT EXISTS handover_type VARCHAR(50)",
+                        "ALTER TABLE cash_handovers ADD COLUMN IF NOT EXISTS reference_number VARCHAR(100)",
                         "ALTER TABLE account_handovers ADD COLUMN IF NOT EXISTS handover_date DATE",
-                        "ALTER TABLE account_handovers ADD COLUMN IF NOT EXISTS notes TEXT"
+                        "ALTER TABLE account_handovers ADD COLUMN IF NOT EXISTS notes TEXT",
+                        "ALTER TABLE account_handovers ADD COLUMN IF NOT EXISTS received_by VARCHAR(100)",
+                        "ALTER TABLE account_handovers ADD COLUMN IF NOT EXISTS handed_by VARCHAR(100)",
+                        "ALTER TABLE account_handovers ADD COLUMN IF NOT EXISTS handover_type VARCHAR(50)",
+                        "ALTER TABLE account_handovers ADD COLUMN IF NOT EXISTS reference_number VARCHAR(100)"
                     ]
                     
                     for alter_cmd in handover_columns:
@@ -319,6 +327,8 @@ class DatabaseManager:
                         notes TEXT,
                         handed_by VARCHAR(100),
                         received_by VARCHAR(100),
+                        handover_type VARCHAR(50),
+                        reference_number VARCHAR(100),
                         hotel VARCHAR(20) DEFAULT 'hotel1',
                         created_by VARCHAR(50),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -335,6 +345,8 @@ class DatabaseManager:
                         notes TEXT,
                         handed_by VARCHAR(100),
                         received_by VARCHAR(100),
+                        handover_type VARCHAR(50),
+                        reference_number VARCHAR(100),
                         hotel VARCHAR(20) DEFAULT 'hotel1',
                         created_by VARCHAR(50),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

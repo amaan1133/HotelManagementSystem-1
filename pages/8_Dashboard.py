@@ -746,8 +746,3 @@ if user_role == 'Admin':
 # Data refresh info
 st.markdown("---")
 st.caption(f"Dashboard last updated: {get_current_date()} | Showing data for: {period_text[date_filter]} | Data refreshes automatically")
-```
-
-```
-The dashboard code is updated to load data from the database for various components including sales, restaurant, room services, expenditures, advance payments, outstanding dues, cash handovers, account handovers, bad debts, discounts and complementary data.
-```

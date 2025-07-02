@@ -66,13 +66,17 @@ with st.form("cash_handover_form"):
                 'handover_date': str(handover_date),
                 'amount': handover_amount,
                 'received_by': received_by,
+                'handed_by': st.session_state.get('username', 'Unknown'),
                 'notes': notes,
-                'handed_by': st.session_state.get('username', 'Unknown')
+                'hotel': selected_hotel,
+                'created_by': st.session_state.get('username', 'Unknown')
             }
-            cash_handovers.append(new_handover)
-            save_data('cash_handovers.json', cash_handovers, selected_hotel)
-            st.success(f"Cash handover of ₹{handover_amount:,.2f} recorded successfully!")
-            st.rerun()
+            
+            if add_record('cash_handovers.json', new_handover, selected_hotel):
+                st.success(f"Cash handover of ₹{handover_amount:,.2f} recorded successfully!")
+                st.rerun()
+            else:
+                st.error("Failed to record cash handover")
         else:
             st.error("Please enter valid amount and receiver name")
 

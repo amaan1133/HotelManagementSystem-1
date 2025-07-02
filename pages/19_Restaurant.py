@@ -1,4 +1,3 @@
-
 import streamlit as st
 import sys
 import os
@@ -137,7 +136,7 @@ with st.form("add_restaurant_order_form"):
                                  help="Select the date for this restaurant order")
         customer_name = st.text_input("Customer Name", placeholder="Enter customer name")
         customer_phone = st.text_input("Phone Number", placeholder="Customer phone (optional)")
-        
+
         # Room number (optional) - for room service orders
         if isinstance(rooms, dict):
             all_rooms = [f"Room {k}" for k in sorted(rooms.keys(), key=lambda x: int(x))]
@@ -149,7 +148,7 @@ with st.form("add_restaurant_order_form"):
             all_rooms = [f"Room {i}" for i in range(101, 109)]
         room_options = ["Walk-in Customer"] + all_rooms
         room_number = st.selectbox("Customer Type", room_options)
-        
+
         payment_type = st.selectbox("Payment Type", ["Cash", "Account"])
 
     with col2:
@@ -157,12 +156,12 @@ with st.form("add_restaurant_order_form"):
         st.markdown("**Order Items:**")
         selected_items = []
         total_amount = 0
-        
+
         # Create a simple order interface
         order_text = st.text_area("Order Details", 
                                 placeholder="Enter items and quantities\nExample:\nButter Chicken x1 - ₹280\nNaan x2 - ₹100\nTea x2 - ₹50",
                                 height=120)
-        
+
         # Manual amount entry for custom orders
         manual_amount = st.number_input("Total Amount", min_value=0.0, step=10.0, help="Enter total bill amount")
 
@@ -172,7 +171,7 @@ with st.form("add_restaurant_order_form"):
         if customer_name and manual_amount > 0:
             # Determine order type
             order_type = "Restaurant - Room Service" if room_number != "Walk-in Customer" else "Restaurant - Dine In"
-            
+
             new_sale = {
                 'id': generate_id(),
                 'date': order_date.strftime('%Y-%m-%d %H:%M:%S'),
@@ -190,7 +189,7 @@ with st.form("add_restaurant_order_form"):
                 'status': 'Completed',
                 'created_by': st.session_state.get('username', 'Unknown')
             }
-            
+
             sales.append(new_sale)
             save_data('sales.json', sales, selected_hotel)
             st.success(f"Restaurant order added successfully! ₹{manual_amount:,.2f} added to {payment_type} sales.")
@@ -206,7 +205,7 @@ st.markdown("### Restaurant Orders")
 if restaurant_sales:
     # Filter options
     col1, col2, col3 = st.columns(3)
-    
+
     with col1:
         filter_payment = st.selectbox("Filter by Payment", ["All", "Cash", "Account"])
     with col2:
@@ -216,10 +215,10 @@ if restaurant_sales:
 
     # Apply filters
     filtered_orders = restaurant_sales
-    
+
     if filter_payment != "All":
         filtered_orders = [s for s in filtered_orders if s['payment_type'] == filter_payment]
-    
+
     if filter_date == "Today":
         today_date = get_current_datetime()[:10]
         filtered_orders = [s for s in filtered_orders if s['date'].startswith(today_date)]
@@ -230,7 +229,7 @@ if restaurant_sales:
     elif filter_date == "This Month":
         current_month = get_current_datetime()[:7]
         filtered_orders = [s for s in filtered_orders if s['date'].startswith(current_month)]
-    
+
     if filter_type != "All":
         if filter_type == "Dine In":
             filtered_orders = [s for s in filtered_orders if s.get('order_type', '').find('Dine In') != -1]
@@ -240,11 +239,11 @@ if restaurant_sales:
     # Display filtered results
     if filtered_orders:
         st.info(f"Showing {len(filtered_orders)} orders totaling ₹{sum(order['amount'] for order in filtered_orders):,.2f}")
-        
+
         for order in filtered_orders:
             order_date = order['date'][:10] if order['date'] else 'N/A'
             order_type_display = order.get('order_type', 'Restaurant Order')
-            
+
             with st.expander(f"#{order['id']} - {order['customer_name']} - ₹{order['amount']:,.2f} - {order_date} - {order_type_display}"):
                 col1, col2 = st.columns(2)
 
@@ -337,7 +336,7 @@ if restaurant_sales:
 
         # Remove zero values
         order_type_data = {k: v for k, v in order_type_data.items() if v > 0}
-        
+
         if order_type_data:
             fig_type = px.bar(
                 x=list(order_type_data.keys()), 
@@ -362,9 +361,9 @@ if restaurant_sales:
 if user_role == 'Admin':
     st.markdown("---")
     st.markdown("### 📥 Download Restaurant Data")
-    
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
         if restaurant_sales:
             df = pd.DataFrame(restaurant_sales)
@@ -377,7 +376,7 @@ if user_role == 'Admin':
             )
         else:
             st.warning("No restaurant orders to download")
-    
+
     with col2:
         # Download all restaurant data as JSON
         if restaurant_sales:

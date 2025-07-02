@@ -121,7 +121,8 @@ if cash_sales:
                 st.write(f"**Type:** {sale['type']}")
 
             with col2:
-                st.write(f"**Cash Received:** ₹{sale.get('cash_received', sale['amount']):,.2f}")
+                cash_received = sale.get('cash_received') or sale.get('amount', 0)
+                st.write(f"**Cash Received:** ₹{cash_received:,.2f}")
                 st.write(f"**Room:** {sale.get('room_number', 'N/A')}")
                 st.write(f"**Created by:** {sale.get('created_by', 'Unknown')}")
 

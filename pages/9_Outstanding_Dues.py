@@ -79,15 +79,20 @@ with st.form("add_due_form"):
                 'due_date': str(due_date),
                 'description': description,
                 'phone': phone,
+                'room_number': room_number,
+                'payment_type': payment_type,
                 'status': 'Pending',
+                'hotel': selected_hotel,
                 'created_by': st.session_state.get('username', 'Unknown')
             }
-            outstanding_dues.append(new_due)
-            save_data('outstanding_dues.json', outstanding_dues, selected_hotel)
-            st.success("Outstanding due added successfully!")
-            st.rerun()
+
+            if add_record('outstanding_dues.json', new_due, selected_hotel):
+                st.success(f"Outstanding due of ₹{amount:,.2f} added for {customer_name}")
+                st.rerun()
+            else:
+                st.error("Failed to add outstanding due")
         else:
-            st.error("Customer name and amount are required")
+            st.error("Please fill in customer name and valid amount")
 
 st.markdown("---")
 

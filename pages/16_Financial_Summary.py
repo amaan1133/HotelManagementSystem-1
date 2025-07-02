@@ -860,4 +860,4 @@ with col3:
             file_name=f"{hotel_name.lower().replace(' ', '_')}_detailed_records_{get_current_date()}.json",
             mime="application/json"
         )
-```The financial summary now loads all relevant financial data from the database for comprehensive reporting.
+# The financial summary now loads all relevant financial data from the database for comprehensive reporting.

@@ -70,17 +70,21 @@ with st.form("account_handover_form"):
                 'date': get_current_datetime(),
                 'amount': handover_amount,
                 'received_by': received_by,
+                'handed_by': st.session_state.get('username', 'Unknown'),
                 'handover_type': handover_type,
                 'reference_number': reference_number,
                 'notes': notes,
+                'hotel': selected_hotel,
                 'created_by': st.session_state.get('username', 'Unknown')
             }
 
             if add_record('account_handovers.json', new_handover, selected_hotel):
                 st.success(f"Account handover of ₹{handover_amount:,.2f} recorded for {received_by}")
+                st.rerun()
             else:
                 st.error("Failed to record account handover")
-            st.rerun()olumns(2)
+
+    col1, col2 = st.columns(2)
 
     with col1:
         handover_amount = st.number_input("Handover Amount", value=float(account_balance) if account_balance > 0 else 0.0, min_value=0.0, step=100.0)
