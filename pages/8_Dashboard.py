@@ -678,68 +678,60 @@ if user_role == 'Admin':
         with col2:
             if confirm_text == "DELETE ALL DATA":
                 if st.button("🗑️ DELETE ALL DATA", type="primary"):
-                    # Clear all data files
-                    from utils.data_manager import save_data
+                    # Clear all data from database
+                    try:
+                        from utils.database_data_manager import get_db_manager
+                        from sqlalchemy import text
+                        
+                        db_manager = get_db_manager()
+                        
+                        # Delete all data from database tables for the current hotel
+                        table_names = [
+                            'sales',
+                            'expenditures', 
+                            'room_services',
+                            'complementary_rooms',
+                            'advance_payments',
+                            'outstanding_dues',
+                            'uploaded_bills',
+                            'cash_handovers',
+                            'account_handovers',
+                            'bad_debts',
+                            'discounts',
+                            'restaurant'
+                        ]
 
-                    # Reset all data files to empty lists
-                    data_files = [
-                        'sales.json',
-                        'expenditures.json', 
-                        'room_services.json',
-                        'complementary_rooms.json',
-                        'advance_payments.json',
-                        'outstanding_dues.json',
-                        'uploaded_bills.json',
-                        'cash_handovers.json',
-                        'account_handovers.json',
-                        'bad_debts.json',
-                        'discounts.json',
-                        'complementary_records.json'
-                    ]
+                        deleted_count = 0
+                        for table_name in table_names:
+                            # Execute SQL to delete all records for the current hotel
+                            query = f"DELETE FROM {table_name} WHERE hotel = %s"
+                            try:
+                                with db_manager.engine.connect() as conn:
+                                    result = conn.execute(text(query), (selected_hotel,))
+                                    conn.commit()
+                                    deleted_count += result.rowcount if hasattr(result, 'rowcount') else 0
+                                    print(f"Deleted all {table_name} records for {selected_hotel}")
+                            except Exception as e:
+                                print(f"Error deleting {table_name}: {e}")
+                                continue
 
-                    for file_name in data_files:
-                        save_data(file_name, [], selected_hotel)
+                        # Also reset rooms to available status
+                        rooms_query = "UPDATE rooms SET status = 'Available', customer_name = NULL, check_in_date = NULL, check_out_date = NULL, phone = NULL, address = NULL WHERE hotel = %s"
+                        try:
+                            with db_manager.engine.connect() as conn:
+                                conn.execute(text(rooms_query), (selected_hotel,))
+                                conn.commit()
+                                print(f"Reset all rooms for {selected_hotel}")
+                        except Exception as e:
+                            print(f"Error resetting rooms: {e}")
 
-                    # Reset rooms to default state but keep current prices
-                    current_rooms = load_data('rooms.json', selected_hotel)
-                    rooms_reset = {}
-
-                    # Different room ranges for different hotels
-                    if selected_hotel == 'hotel1':
-                        room_numbers = range(101, 109)  # 101-108
-                    else:  # hotel2
-                        room_numbers = [101, 102, 103, 201, 202, 203, 301, 302, 303, 304, 305, 401, 402, 403, 501, 502, 503]
-
-                    for room_num in room_numbers:
-                        room_key = str(room_num)
-                        # Keep existing price if room exists, otherwise use default
-                        if isinstance(current_rooms, dict):
-                            existing_price = current_rooms.get(room_key, {}).get('price', 2000)
-                            existing_type = current_rooms.get(room_key, {}).get('type', 'Standard')
-                        elif isinstance(current_rooms, list):
-                            # Find room in list by room_number
-                            existing_room = next((r for r in current_rooms if str(r.get('room_number', r.get('id'))) == room_key), {})
-                            existing_price = existing_room.get('price', 2000)
-                            existing_type = existing_room.get('type', 'Standard')
-                        else:
-                            existing_price = 2000
-                            existing_type = 'Standard'
-
-                        rooms_reset[room_key] = {
-                            'room_number': room_key,
-                            'status': 'Available',
-                            'type': existing_type,
-                            'price': existing_price,
-                            'current_guest': None,
-                            'checkin_date': None,
-                            'checkout_date': None,
-                            'guest_phone': None
-                        }
-                    save_data('rooms.json', rooms_reset, selected_hotel)
-
-                    st.success("✅ All data has been successfully deleted!")
-                    st.balloons()
-                    st.rerun()
+                        st.success(f"✅ All data has been successfully deleted from database! Deleted records from {len(table_names)} tables.")
+                        st.balloons()
+                        st.rerun()
+                        
+                    except Exception as e:
+                        st.error(f"Error deleting data from database: {e}")
+                        print(f"Database deletion error: {e}")
             else:
                 st.button("🗑️ DELETE ALL DATA", disabled=True, help="Type 'DELETE ALL DATA' to enable this button")
 

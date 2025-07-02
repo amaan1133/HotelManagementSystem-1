@@ -96,5 +96,96 @@
     "filename": "hotel2_rooms.json",
     "hotel": "hotel2",
     "thread_id": 140215025915584
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.705010",
+    "operation": "save",
+    "filename": "hotel2_sales.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.722166",
+    "operation": "save",
+    "filename": "hotel2_expenditures.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.728132",
+    "operation": "save",
+    "filename": "hotel2_room_services.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.732443",
+    "operation": "save",
+    "filename": "hotel2_complementary_rooms.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.737557",
+    "operation": "save",
+    "filename": "hotel2_advance_payments.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.739650",
+    "operation": "save",
+    "filename": "hotel2_outstanding_dues.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.745915",
+    "operation": "save",
+    "filename": "hotel2_uploaded_bills.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.751627",
+    "operation": "save",
+    "filename": "hotel2_cash_handovers.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.754833",
+    "operation": "save",
+    "filename": "hotel2_account_handovers.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.758938",
+    "operation": "save",
+    "filename": "hotel2_bad_debts.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.765287",
+    "operation": "save",
+    "filename": "hotel2_discounts.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:30.770777",
+    "operation": "save",
+    "filename": "hotel2_complementary_records.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
+  },
+  {
+    "timestamp": "2025-07-02T08:16:31.043968",
+    "operation": "save",
+    "filename": "hotel2_rooms.json",
+    "hotel": "hotel2",
+    "thread_id": 140287124997824
   }
 ]
