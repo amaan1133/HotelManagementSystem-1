@@ -29,19 +29,90 @@ hotel_name = st.session_state.get('hotel_name', 'Hotel 1')
 
 st.title(f"💰 {hotel_name} - Financial Summary")
 
-# Load all financial data
-sales = load_data('sales.json', selected_hotel)
-expenditures = load_data('expenditures.json', selected_hotel)
-cash_handovers = load_data('cash_handovers.json', selected_hotel)
-account_handovers = load_data('account_handovers.json', selected_hotel)
-outstanding_dues = load_data('outstanding_dues.json', selected_hotel)
-advance_payments = load_data('advance_payments.json', selected_hotel)
-bad_debts = load_data('bad_debts.json', selected_hotel)
-discounts = load_data('discounts.json', selected_hotel)
-rooms = load_data('rooms.json', selected_hotel)
-room_services = load_data('room_services.json', selected_hotel)
-complementary_rooms = load_data('complementary_rooms.json', selected_hotel)
-uploaded_bills = load_data('uploaded_bills.json', selected_hotel)
+# Load all financial data with error handling
+try:
+    sales = load_data('sales.json', selected_hotel)
+    if not isinstance(sales, list):
+        sales = []
+except:
+    sales = []
+
+try:
+    expenditures = load_data('expenditures.json', selected_hotel)
+    if not isinstance(expenditures, list):
+        expenditures = []
+except:
+    expenditures = []
+
+try:
+    cash_handovers = load_data('cash_handovers.json', selected_hotel)
+    if not isinstance(cash_handovers, list):
+        cash_handovers = []
+except:
+    cash_handovers = []
+
+try:
+    account_handovers = load_data('account_handovers.json', selected_hotel)
+    if not isinstance(account_handovers, list):
+        account_handovers = []
+except:
+    account_handovers = []
+
+try:
+    outstanding_dues = load_data('outstanding_dues.json', selected_hotel)
+    if not isinstance(outstanding_dues, list):
+        outstanding_dues = []
+except:
+    outstanding_dues = []
+
+try:
+    advance_payments = load_data('advance_payments.json', selected_hotel)
+    if not isinstance(advance_payments, list):
+        advance_payments = []
+except:
+    advance_payments = []
+
+try:
+    bad_debts = load_data('bad_debts.json', selected_hotel)
+    if not isinstance(bad_debts, list):
+        bad_debts = []
+except:
+    bad_debts = []
+
+try:
+    discounts = load_data('discounts.json', selected_hotel)
+    if not isinstance(discounts, list):
+        discounts = []
+except:
+    discounts = []
+
+try:
+    rooms = load_data('rooms.json', selected_hotel)
+    if not isinstance(rooms, dict):
+        rooms = {}
+except:
+    rooms = {}
+
+try:
+    room_services = load_data('room_services.json', selected_hotel)
+    if not isinstance(room_services, list):
+        room_services = []
+except:
+    room_services = []
+
+try:
+    complementary_rooms = load_data('complementary_rooms.json', selected_hotel)
+    if not isinstance(complementary_rooms, list):
+        complementary_rooms = []
+except:
+    complementary_rooms = []
+
+try:
+    uploaded_bills = load_data('uploaded_bills.json', selected_hotel)
+    if not isinstance(uploaded_bills, list):
+        uploaded_bills = []
+except:
+    uploaded_bills = []
 
 # Date filter section
 st.markdown("### 📅 Date Filter")

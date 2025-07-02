@@ -96,17 +96,69 @@ def filter_data_by_date(data_list, date_filter, start_date=None, end_date=None):
 
 st.markdown("---")
 
-# Load all data for selected hotel
-# Load all data for selected hotel
-all_sales = load_data('sales.json', selected_hotel)
-all_expenditures = load_data('expenditures.json', selected_hotel)
-all_room_services = load_data('room_services.json', selected_hotel)
-all_complementary_rooms = load_data('complementary_rooms.json', selected_hotel)
-all_advance_payments = load_data('advance_payments.json', selected_hotel)
-all_outstanding_dues = load_data('outstanding_dues.json', selected_hotel)
-all_uploaded_bills = load_data('uploaded_bills.json', selected_hotel)
-all_cash_handovers = load_data('cash_handovers.json', selected_hotel)
-rooms = load_data('rooms.json', selected_hotel)
+# Load all data for selected hotel with error handling
+try:
+    all_sales = load_data('sales.json', selected_hotel)
+    if not isinstance(all_sales, list):
+        all_sales = []
+except:
+    all_sales = []
+
+try:
+    all_expenditures = load_data('expenditures.json', selected_hotel)
+    if not isinstance(all_expenditures, list):
+        all_expenditures = []
+except:
+    all_expenditures = []
+
+try:
+    all_room_services = load_data('room_services.json', selected_hotel)
+    if not isinstance(all_room_services, list):
+        all_room_services = []
+except:
+    all_room_services = []
+
+try:
+    all_complementary_rooms = load_data('complementary_rooms.json', selected_hotel)
+    if not isinstance(all_complementary_rooms, list):
+        all_complementary_rooms = []
+except:
+    all_complementary_rooms = []
+
+try:
+    all_advance_payments = load_data('advance_payments.json', selected_hotel)
+    if not isinstance(all_advance_payments, list):
+        all_advance_payments = []
+except:
+    all_advance_payments = []
+
+try:
+    all_outstanding_dues = load_data('outstanding_dues.json', selected_hotel)
+    if not isinstance(all_outstanding_dues, list):
+        all_outstanding_dues = []
+except:
+    all_outstanding_dues = []
+
+try:
+    all_uploaded_bills = load_data('uploaded_bills.json', selected_hotel)
+    if not isinstance(all_uploaded_bills, list):
+        all_uploaded_bills = []
+except:
+    all_uploaded_bills = []
+
+try:
+    all_cash_handovers = load_data('cash_handovers.json', selected_hotel)
+    if not isinstance(all_cash_handovers, list):
+        all_cash_handovers = []
+except:
+    all_cash_handovers = []
+
+try:
+    rooms = load_data('rooms.json', selected_hotel)
+    if not isinstance(rooms, dict):
+        rooms = {}
+except:
+    rooms = {}
 
 # Apply date filtering to all data
 sales = filter_data_by_date(all_sales, date_filter, start_date, end_date)

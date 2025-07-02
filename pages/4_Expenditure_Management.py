@@ -85,9 +85,11 @@ with st.form("add_expenditure_form"):
                 'created_by': st.session_state.get('username', 'Unknown')
             }
 
-            expenditures.append(new_expenditure)
-            save_data('expenditures.json', expenditures, selected_hotel)
-            st.success("Expenditure added successfully!")
+            # Add to expenditures data and save
+            if add_record('expenditures.json', new_expenditure, selected_hotel):
+                st.success("Expenditure added successfully!")
+            else:
+                st.error("Failed to add expenditure record")
             st.rerun()
 
 st.markdown("---")

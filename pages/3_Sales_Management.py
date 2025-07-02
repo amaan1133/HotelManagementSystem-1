@@ -27,6 +27,11 @@ rooms_list = load_data('rooms.json', selected_hotel)
 outstanding_dues = load_data('outstanding_dues.json', selected_hotel)
 advance_payments = load_data('advance_payments.json', selected_hotel)
 
+# Ensure sales is a list
+if not isinstance(sales, list):
+    sales = []
+    save_data('sales.json', sales, selected_hotel)
+
 # Convert list to dictionary if needed
 if isinstance(rooms_list, list):
     rooms = {}
@@ -217,7 +222,7 @@ with st.form("add_sale_form"):
                 # Regular sales (Cash/Account)
                 new_sale = {
                     'id': generate_id(),
-                    'date': get_current_datetime(),
+                    'date': sale_date.strftime('%Y-%m-%d %H:%M:%S'),
                     'type': sale_type,
                     'amount': amount,
                     'payment_type': payment_type,
@@ -228,9 +233,14 @@ with st.form("add_sale_form"):
                     'created_by': st.session_state.get('username', 'Unknown')
                 }
 
-                sales.append(new_sale)
-                save_data('sales.json', sales, selected_hotel)
-                st.success(f"Sale of ₹{amount:,.2f} added to {payment_type} sales successfully!")
+                # Add to sales data and save
+                if add_record('sales.json', new_sale, selected_hotel):
+                    st.success(f"Sale of ₹{amount:,.2f} added to {payment_type} sales successfully!")
+                else:
+                    st.error("Failed to add sale record")
+                    
+                # Force reload of sales data to ensure it appears immediately
+                st.rerun()
 
             # If room booking, update room status (for all payment types)
             if sale_type == "Room Booking" and room_number != "None":
@@ -305,39 +315,102 @@ if sales:
 
             # Admin actions
             if user_role == 'Admin':
-                col1, col2, col3 = st.columns(3)
+                st.markdown("**Admin Actions:**")
+                col1, col2, col3, col4 = st.columns(4)
 
                 with col1:
-                    if sale['status'] == 'Pending' and st.button(f"Mark Completed", key=f"complete_{sale['id']}"):
-                        for s in sales:
+                    if sale['status'] == 'Pending' and st.button(f"✅ Complete", key=f"complete_{sale['id']}"):
+                        updated_sales = load_data('sales.json', selected_hotel)
+                        for s in updated_sales:
                             if s['id'] == sale['id']:
                                 s['status'] = 'Completed'
                                 break
-                        save_data('sales.json', sales, selected_hotel)
+                        save_data('sales.json', updated_sales, selected_hotel)
                         st.success("Sale marked as completed!")
                         st.rerun()
 
                 with col2:
-                    if st.button(f"Edit Amount", key=f"edit_{sale['id']}"):
-                        with st.form(f"edit_sale_{sale['id']}"):
-                            new_amount = st.number_input("New Amount", value=sale['amount'], min_value=0.0)
-                            new_description = st.text_input("Description", value=sale.get('description', ''))
-                            if st.form_submit_button("Update Sale"):
-                                for s in sales:
-                                    if s['id'] == sale['id']:
-                                        s['amount'] = new_amount
-                                        s['description'] = new_description
-                                        break
-                                save_data('sales.json', sales, selected_hotel)
-                                st.success("Sale updated successfully!")
-                                st.rerun()
+                    if st.button(f"✏️ Edit", key=f"edit_{sale['id']}"):
+                        st.session_state[f"edit_mode_{sale['id']}"] = not st.session_state.get(f"edit_mode_{sale['id']}", False)
+                        st.rerun()
 
                 with col3:
-                    if st.button(f"Delete", key=f"delete_{sale['id']}", type="secondary"):
-                        sales = [s for s in sales if s['id'] != sale['id']]
-                        save_data('sales.json', sales, selected_hotel)
-                        st.success("Sale deleted successfully!")
+                    if st.button(f"🗑️ Delete", key=f"delete_{sale['id']}", type="secondary"):
+                        st.session_state[f"confirm_delete_{sale['id']}"] = True
                         st.rerun()
+
+                with col4:
+                    if sale['status'] == 'Completed' and st.button(f"⏸️ Pending", key=f"pending_{sale['id']}"):
+                        updated_sales = load_data('sales.json', selected_hotel)
+                        for s in updated_sales:
+                            if s['id'] == sale['id']:
+                                s['status'] = 'Pending'
+                                break
+                        save_data('sales.json', updated_sales, selected_hotel)
+                        st.success("Sale marked as pending!")
+                        st.rerun()
+
+                # Edit form
+                if st.session_state.get(f"edit_mode_{sale['id']}", False):
+                    with st.form(f"edit_sale_{sale['id']}"):
+                        st.markdown("**Edit Sale Details:**")
+                        edit_col1, edit_col2 = st.columns(2)
+                        
+                        with edit_col1:
+                            new_amount = st.number_input("Amount", value=sale['amount'], min_value=0.0)
+                            new_customer = st.text_input("Customer Name", value=sale['customer_name'])
+                            new_payment_type = st.selectbox("Payment Type", ["Cash", "Account"], 
+                                                          index=0 if sale['payment_type'] == 'Cash' else 1)
+                        
+                        with edit_col2:
+                            new_type = st.selectbox("Sale Type", 
+                                                  ["Room Booking", "Food & Beverage", "Restaurant", "Laundry", "Other Services"],
+                                                  index=["Room Booking", "Food & Beverage", "Restaurant", "Laundry", "Other Services"].index(sale['type']) if sale['type'] in ["Room Booking", "Food & Beverage", "Restaurant", "Laundry", "Other Services"] else 0)
+                            new_description = st.text_area("Description", value=sale.get('description', ''))
+                            new_status = st.selectbox("Status", ["Completed", "Pending"], 
+                                                    index=0 if sale['status'] == 'Completed' else 1)
+                        
+                        col_update, col_cancel = st.columns(2)
+                        with col_update:
+                            if st.form_submit_button("💾 Update Sale", type="primary"):
+                                updated_sales = load_data('sales.json', selected_hotel)
+                                for s in updated_sales:
+                                    if s['id'] == sale['id']:
+                                        s['amount'] = new_amount
+                                        s['customer_name'] = new_customer
+                                        s['payment_type'] = new_payment_type
+                                        s['type'] = new_type
+                                        s['description'] = new_description
+                                        s['status'] = new_status
+                                        break
+                                save_data('sales.json', updated_sales, selected_hotel)
+                                st.session_state[f"edit_mode_{sale['id']}"] = False
+                                st.success("Sale updated successfully!")
+                                st.rerun()
+                        
+                        with col_cancel:
+                            if st.form_submit_button("❌ Cancel"):
+                                st.session_state[f"edit_mode_{sale['id']}"] = False
+                                st.rerun()
+
+                # Delete confirmation
+                if st.session_state.get(f"confirm_delete_{sale['id']}", False):
+                    st.error(f"⚠️ Are you sure you want to delete this sale of ₹{sale['amount']:,.2f}?")
+                    col_confirm, col_cancel = st.columns(2)
+                    
+                    with col_confirm:
+                        if st.button(f"🗑️ Yes, Delete", key=f"confirm_delete_yes_{sale['id']}", type="primary"):
+                            updated_sales = load_data('sales.json', selected_hotel)
+                            updated_sales = [s for s in updated_sales if s['id'] != sale['id']]
+                            save_data('sales.json', updated_sales, selected_hotel)
+                            st.session_state[f"confirm_delete_{sale['id']}"] = False
+                            st.success("Sale deleted successfully!")
+                            st.rerun()
+                    
+                    with col_cancel:
+                        if st.button(f"❌ Cancel", key=f"confirm_delete_no_{sale['id']}"):
+                            st.session_state[f"confirm_delete_{sale['id']}"] = False
+                            st.rerun()
 
 else:
     st.info("No sales records found")
