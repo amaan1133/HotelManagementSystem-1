@@ -52,6 +52,132 @@ class DatabaseManager:
                 
                 # Add missing columns to existing tables
                 try:
+                    # Room Services table alterations
+                    room_service_columns = [
+                        "ALTER TABLE room_services ADD COLUMN IF NOT EXISTS customer_name VARCHAR(100)",
+                        "ALTER TABLE room_services ADD COLUMN IF NOT EXISTS service_category VARCHAR(50)",
+                        "ALTER TABLE room_services ADD COLUMN IF NOT EXISTS service_item VARCHAR(100)",
+                        "ALTER TABLE room_services ADD COLUMN IF NOT EXISTS quantity INTEGER DEFAULT 1",
+                        "ALTER TABLE room_services ADD COLUMN IF NOT EXISTS unit_price DECIMAL(10,2) DEFAULT 0",
+                        "ALTER TABLE room_services ADD COLUMN IF NOT EXISTS special_instructions TEXT",
+                        "ALTER TABLE room_services ADD COLUMN IF NOT EXISTS priority VARCHAR(20) DEFAULT 'Normal'",
+                        "ALTER TABLE room_services ADD COLUMN IF NOT EXISTS payment_method VARCHAR(20)",
+                        "ALTER TABLE room_services ADD COLUMN IF NOT EXISTS completed_date TIMESTAMP",
+                        "ALTER TABLE room_services ALTER COLUMN room_number DROP NOT NULL"
+                    ]
+                    
+                    for alter_cmd in room_service_columns:
+                        try:
+                            conn.execute(text(alter_cmd))
+                        except:
+                            pass
+                    
+                    # Outstanding Dues table alterations
+                    outstanding_due_columns = [
+                        "ALTER TABLE outstanding_dues ADD COLUMN IF NOT EXISTS due_type VARCHAR(50)",
+                        "ALTER TABLE outstanding_dues ADD COLUMN IF NOT EXISTS due_date DATE",
+                        "ALTER TABLE outstanding_dues ADD COLUMN IF NOT EXISTS phone VARCHAR(20)",
+                        "ALTER TABLE outstanding_dues ADD COLUMN IF NOT EXISTS payment_history TEXT",
+                        "ALTER TABLE outstanding_dues ADD COLUMN IF NOT EXISTS received_date TIMESTAMP",
+                        "ALTER TABLE outstanding_dues ADD COLUMN IF NOT EXISTS payment_method VARCHAR(20)",
+                        "ALTER TABLE outstanding_dues ADD COLUMN IF NOT EXISTS payment_date TIMESTAMP"
+                    ]
+                    
+                    for alter_cmd in outstanding_due_columns:
+                        try:
+                            conn.execute(text(alter_cmd))
+                        except:
+                            pass
+                    
+                    # Sales table alterations
+                    sales_columns = [
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS transaction_date TIMESTAMP",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS customer_phone VARCHAR(20)",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS due_date DATE",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS cash_received DECIMAL(10,2)",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS order_details TEXT",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS special_instructions TEXT",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS restaurant_name VARCHAR(100)",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS order_type VARCHAR(50)",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS advance_id VARCHAR(50)",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS original_advance_date DATE",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS payment_date DATE",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS original_due_id VARCHAR(50)",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS notes TEXT",
+                        "ALTER TABLE sales ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'Completed'"
+                    ]
+                    
+                    for alter_cmd in sales_columns:
+                        try:
+                            conn.execute(text(alter_cmd))
+                        except:
+                            pass
+                    
+                    # Discounts table alterations
+                    discount_columns = [
+                        "ALTER TABLE discounts ADD COLUMN IF NOT EXISTS amount DECIMAL(10,2)",
+                        "ALTER TABLE discounts ADD COLUMN IF NOT EXISTS discount_type VARCHAR(50)",
+                        "ALTER TABLE discounts ADD COLUMN IF NOT EXISTS reason VARCHAR(200)",
+                        "ALTER TABLE discounts ADD COLUMN IF NOT EXISTS reference_id VARCHAR(50)",
+                        "ALTER TABLE discounts ADD COLUMN IF NOT EXISTS percentage DECIMAL(5,2) DEFAULT 0",
+                        "ALTER TABLE discounts ADD COLUMN IF NOT EXISTS original_advance_date DATE",
+                        "ALTER TABLE discounts ADD COLUMN IF NOT EXISTS advance_id VARCHAR(50)",
+                        "ALTER TABLE discounts ADD COLUMN IF NOT EXISTS original_due_id VARCHAR(50)"
+                    ]
+                    
+                    for alter_cmd in discount_columns:
+                        try:
+                            conn.execute(text(alter_cmd))
+                        except:
+                            pass
+                    
+                    # Bad Debts table alterations
+                    bad_debt_columns = [
+                        "ALTER TABLE bad_debts ADD COLUMN IF NOT EXISTS reference_id VARCHAR(50)",
+                        "ALTER TABLE bad_debts ADD COLUMN IF NOT EXISTS original_due_id VARCHAR(50)",
+                        "ALTER TABLE bad_debts ADD COLUMN IF NOT EXISTS original_advance_date DATE",
+                        "ALTER TABLE bad_debts ADD COLUMN IF NOT EXISTS advance_id VARCHAR(50)"
+                    ]
+                    
+                    for alter_cmd in bad_debt_columns:
+                        try:
+                            conn.execute(text(alter_cmd))
+                        except:
+                            pass
+                    
+                    # Cash/Account Handovers table alterations
+                    handover_columns = [
+                        "ALTER TABLE cash_handovers ADD COLUMN IF NOT EXISTS handover_date DATE",
+                        "ALTER TABLE cash_handovers ADD COLUMN IF NOT EXISTS notes TEXT",
+                        "ALTER TABLE account_handovers ADD COLUMN IF NOT EXISTS handover_date DATE",
+                        "ALTER TABLE account_handovers ADD COLUMN IF NOT EXISTS notes TEXT"
+                    ]
+                    
+                    for alter_cmd in handover_columns:
+                        try:
+                            conn.execute(text(alter_cmd))
+                        except:
+                            pass
+                    
+                    # Complementary Rooms table alterations
+                    comp_room_columns = [
+                        "ALTER TABLE complementary_rooms ADD COLUMN IF NOT EXISTS guest_contact VARCHAR(20)",
+                        "ALTER TABLE complementary_rooms ADD COLUMN IF NOT EXISTS checkin_date DATE",
+                        "ALTER TABLE complementary_rooms ADD COLUMN IF NOT EXISTS checkout_date DATE",
+                        "ALTER TABLE complementary_rooms ADD COLUMN IF NOT EXISTS nights INTEGER DEFAULT 1",
+                        "ALTER TABLE complementary_rooms ADD COLUMN IF NOT EXISTS room_rate DECIMAL(10,2) DEFAULT 0",
+                        "ALTER TABLE complementary_rooms ADD COLUMN IF NOT EXISTS comp_reason VARCHAR(200)",
+                        "ALTER TABLE complementary_rooms ADD COLUMN IF NOT EXISTS approved_by VARCHAR(50)",
+                        "ALTER TABLE complementary_rooms ADD COLUMN IF NOT EXISTS special_notes TEXT",
+                        "ALTER TABLE complementary_rooms ADD COLUMN IF NOT EXISTS actual_checkout TIMESTAMP"
+                    ]
+                    
+                    for alter_cmd in comp_room_columns:
+                        try:
+                            conn.execute(text(alter_cmd))
+                        except:
+                            pass
+                    
                     # Add hotel column to tables that might be missing it
                     tables_needing_hotel = [
                         'cash_handovers', 'account_handovers', 'bad_debts', 
@@ -72,12 +198,26 @@ class DatabaseManager:
                     CREATE TABLE IF NOT EXISTS sales (
                         id VARCHAR(50) PRIMARY KEY,
                         date TIMESTAMP NOT NULL,
+                        transaction_date TIMESTAMP,
                         type VARCHAR(50) NOT NULL,
                         amount DECIMAL(10,2) NOT NULL,
                         customer_name VARCHAR(100),
+                        customer_phone VARCHAR(20),
                         description TEXT,
                         payment_type VARCHAR(20),
                         room_number VARCHAR(10),
+                        due_date DATE,
+                        cash_received DECIMAL(10,2),
+                        order_details TEXT,
+                        special_instructions TEXT,
+                        restaurant_name VARCHAR(100),
+                        order_type VARCHAR(50),
+                        advance_id VARCHAR(50),
+                        original_advance_date DATE,
+                        payment_date DATE,
+                        original_due_id VARCHAR(50),
+                        notes TEXT,
+                        status VARCHAR(20) DEFAULT 'Completed',
                         hotel VARCHAR(20) DEFAULT 'hotel1',
                         created_by VARCHAR(50),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -152,9 +292,16 @@ class DatabaseManager:
                         date TIMESTAMP NOT NULL,
                         customer_name VARCHAR(100) NOT NULL,
                         amount DECIMAL(10,2) NOT NULL,
+                        due_type VARCHAR(50),
+                        due_date DATE,
                         description TEXT,
+                        phone VARCHAR(20),
                         room_number VARCHAR(10),
                         payment_type VARCHAR(20),
+                        payment_history TEXT,
+                        received_date TIMESTAMP,
+                        payment_method VARCHAR(20),
+                        payment_date TIMESTAMP,
                         status VARCHAR(20) DEFAULT 'Pending',
                         hotel VARCHAR(20) DEFAULT 'hotel1',
                         created_by VARCHAR(50),
@@ -167,8 +314,9 @@ class DatabaseManager:
                     CREATE TABLE IF NOT EXISTS cash_handovers (
                         id VARCHAR(50) PRIMARY KEY,
                         date TIMESTAMP NOT NULL,
+                        handover_date DATE,
                         amount DECIMAL(10,2) NOT NULL,
-                        description TEXT,
+                        notes TEXT,
                         handed_by VARCHAR(100),
                         received_by VARCHAR(100),
                         hotel VARCHAR(20) DEFAULT 'hotel1',
@@ -182,8 +330,9 @@ class DatabaseManager:
                     CREATE TABLE IF NOT EXISTS account_handovers (
                         id VARCHAR(50) PRIMARY KEY,
                         date TIMESTAMP NOT NULL,
+                        handover_date DATE,
                         amount DECIMAL(10,2) NOT NULL,
-                        description TEXT,
+                        notes TEXT,
                         handed_by VARCHAR(100),
                         received_by VARCHAR(100),
                         hotel VARCHAR(20) DEFAULT 'hotel1',
@@ -199,8 +348,11 @@ class DatabaseManager:
                         date TIMESTAMP NOT NULL,
                         customer_name VARCHAR(100) NOT NULL,
                         amount DECIMAL(10,2) NOT NULL,
-                        description TEXT,
                         reason VARCHAR(200),
+                        reference_id VARCHAR(50),
+                        original_due_id VARCHAR(50),
+                        original_advance_date DATE,
+                        advance_id VARCHAR(50),
                         hotel VARCHAR(20) DEFAULT 'hotel1',
                         created_by VARCHAR(50),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -213,10 +365,14 @@ class DatabaseManager:
                         id VARCHAR(50) PRIMARY KEY,
                         date TIMESTAMP NOT NULL,
                         customer_name VARCHAR(100),
-                        original_amount DECIMAL(10,2) NOT NULL,
-                        discount_amount DECIMAL(10,2) NOT NULL,
-                        final_amount DECIMAL(10,2) NOT NULL,
-                        discount_reason VARCHAR(200),
+                        amount DECIMAL(10,2) NOT NULL,
+                        discount_type VARCHAR(50),
+                        reason VARCHAR(200),
+                        reference_id VARCHAR(50),
+                        percentage DECIMAL(5,2) DEFAULT 0,
+                        original_advance_date DATE,
+                        advance_id VARCHAR(50),
+                        original_due_id VARCHAR(50),
                         hotel VARCHAR(20) DEFAULT 'hotel1',
                         created_by VARCHAR(50),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -245,8 +401,16 @@ class DatabaseManager:
                         date TIMESTAMP NOT NULL,
                         room_number VARCHAR(10) NOT NULL,
                         guest_name VARCHAR(100) NOT NULL,
-                        reason VARCHAR(200),
+                        guest_contact VARCHAR(20),
+                        checkin_date DATE,
+                        checkout_date DATE,
+                        nights INTEGER DEFAULT 1,
+                        room_rate DECIMAL(10,2) DEFAULT 0,
                         room_value DECIMAL(10,2) NOT NULL,
+                        comp_reason VARCHAR(200),
+                        approved_by VARCHAR(50),
+                        special_notes TEXT,
+                        actual_checkout TIMESTAMP,
                         status VARCHAR(20) DEFAULT 'Active',
                         hotel VARCHAR(20) DEFAULT 'hotel1',
                         created_by VARCHAR(50),
@@ -259,17 +423,43 @@ class DatabaseManager:
                     CREATE TABLE IF NOT EXISTS room_services (
                         id VARCHAR(50) PRIMARY KEY,
                         date TIMESTAMP NOT NULL,
-                        room_number VARCHAR(10) NOT NULL,
-                        service_type VARCHAR(50) NOT NULL,
-                        description TEXT,
+                        room_number VARCHAR(10),
+                        customer_name VARCHAR(100),
+                        service_category VARCHAR(50),
+                        service_item VARCHAR(100),
+                        quantity INTEGER DEFAULT 1,
+                        unit_price DECIMAL(10,2) DEFAULT 0,
                         amount DECIMAL(10,2) NOT NULL,
+                        special_instructions TEXT,
+                        priority VARCHAR(20) DEFAULT 'Normal',
                         status VARCHAR(20) DEFAULT 'Pending',
+                        payment_method VARCHAR(20),
+                        completed_date TIMESTAMP,
                         hotel VARCHAR(20) DEFAULT 'hotel1',
                         created_by VARCHAR(50),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """))
                 
+                # Complementary Records table (for complementary payments/waivers)
+                conn.execute(text("""
+                    CREATE TABLE IF NOT EXISTS complementary_records (
+                        id VARCHAR(50) PRIMARY KEY,
+                        date TIMESTAMP NOT NULL,
+                        customer_name VARCHAR(100) NOT NULL,
+                        amount DECIMAL(10,2) NOT NULL,
+                        type VARCHAR(50),
+                        reason VARCHAR(200),
+                        reference_id VARCHAR(50),
+                        original_advance_date DATE,
+                        advance_id VARCHAR(50),
+                        original_due_id VARCHAR(50),
+                        hotel VARCHAR(20) DEFAULT 'hotel1',
+                        created_by VARCHAR(50),
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                """))
+
                 conn.commit()
                 print("Database tables initialized successfully")
                 

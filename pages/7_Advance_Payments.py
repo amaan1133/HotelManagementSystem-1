@@ -32,7 +32,7 @@ st.markdown("### Advance Payments Overview")
 total_advances = len(advance_payments)
 total_amount = sum(ap.get('actual_amount', ap.get('amount', 0)) for ap in advance_payments)
 pending_advances = len([ap for ap in advance_payments if ap['status'] in ['Pending', 'Partially Received']])
-fully_received = len([ap for ap in advance_payments if ap['status'] == 'Fully Received'])
+fully_received = len([ap for ap in advance_payments if ap['status'] == 'Completed'])
 refunded_advances = len([ap for ap in advance_payments if ap['status'] == 'Refunded'])
 
 col1, col2, col3, col4 = st.columns(4)
@@ -43,7 +43,7 @@ with col2:
 with col3:
     st.metric("Pending", pending_advances)
 with col4:
-    st.metric("Fully Received", fully_received)
+    st.metric("Completed", fully_received)
 
 st.markdown("---")
 
@@ -170,7 +170,7 @@ if advance_payments:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        filter_status = st.selectbox("Filter by Status", ["All", "Pending", "Utilized", "Refunded", "Expired"])
+        filter_status = st.selectbox("Filter by Status", ["All", "Pending", "Partially Received", "Completed", "Refunded", "Expired"])
     with col2:
         filter_payment_method = st.selectbox("Filter by Payment Method", ["All"] + list(set(ap['payment_method'] for ap in advance_payments)))
     with col3:
@@ -202,8 +202,8 @@ if advance_payments:
             <div style="border-left: 4px solid {border_color}; padding-left: 10px; margin-bottom: 10px;">
             """, unsafe_allow_html=True)
             
-            # Show completion date if fully paid, otherwise advance date
-            if advance['status'] == 'Fully Received' and advance.get('full_payment_date'):
+            # Show completion date if completed, otherwise advance date
+            if advance['status'] == 'Completed' and advance.get('full_payment_date'):
                 display_date = advance['full_payment_date']
                 date_label = f"{display_date} (Completed)"
             else:
@@ -216,7 +216,7 @@ if advance_payments:
                 
                 with col1:
                     st.write(f"**Advance Date:** {advance['date'][:10] if advance['date'] else 'N/A'}")
-                    if advance['status'] == 'Fully Received' and advance.get('full_payment_date'):
+                    if advance['status'] == 'Completed' and advance.get('full_payment_date'):
                         st.write(f"**Completion Date:** {advance['full_payment_date']}")
                     st.write(f"**Customer:** {advance['customer_name']}")
                     st.write(f"**Contact:** {advance['customer_contact']}")
@@ -292,7 +292,7 @@ if advance_payments:
                                         if ap['id'] == advance['id']:
                                             ap['received_amount'] = new_received
                                             if new_received >= remaining_amt:
-                                                ap['status'] = 'Fully Received'
+                                                ap['status'] = 'Completed'  # Changed from 'Fully Received' to 'Completed'
                                                 ap['completion_date'] = completion_datetime  # Track completion date
                                                 ap['full_payment_date'] = str(payment_date)  # Date only for display
                                             else:
@@ -399,7 +399,7 @@ if advance_payments:
                                     # Update advance payment
                                     for ap in advance_payments:
                                         if ap['id'] == advance['id']:
-                                            ap['status'] = 'Fully Received'
+                                            ap['status'] = 'Completed'  # Changed from 'Fully Received' to 'Completed'
                                             ap['completion_date'] = completion_datetime
                                             ap['full_payment_date'] = str(completion_date)
                                             ap['received_amount'] = ap.get('remaining_amount', 0)
