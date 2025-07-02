@@ -112,16 +112,16 @@ with st.form("add_service_form"):
     col1, col2 = st.columns(2)
 
     with col1:
-        # Get all available rooms for the selected hotel
+        # Get all rooms for dropdown - load from current hotel and show all rooms
         selected_hotel = st.session_state.get('selected_hotel', 'hotel1')
-        
-        # Define room numbers based on hotel (ensuring all rooms are always available for service)
+
+        # Define room numbers based on hotel
         if selected_hotel == 'hotel1':
             all_rooms = [f"Room {i}" for i in range(101, 109)]  # 101-108
         else:  # hotel2
             all_rooms = [f"Room {i}" for i in ['101', '102', '103', '201', '202', '203', '301', '302', '303', '304', '305', '401', '402', '403', '501', '502', '503']]
-        
-        selected_room = st.selectbox("Room Number", all_rooms)
+
+        selected_room = st.selectbox("Room Number", all_rooms, key="room_service_room_selection")
 
         service_category = st.selectbox("Service Category", list(service_menu.keys()))
 

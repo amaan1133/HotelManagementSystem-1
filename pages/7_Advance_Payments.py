@@ -272,7 +272,7 @@ if advance_payments:
                     st.write(f"**Notes:** {advance['notes']}")
                 
                 # Payment Collection - Only show for non-completed advances
-                if advance['status'] in ['Pending', 'Partially Received'] and not advance.get('is_editable', True) == False:
+                if advance['status'] in ['Pending', 'Partially Received']:
                     # Handle new structure with custom remaining amounts
                     remaining_amt = advance.get('remaining_amount', 0)
                     received_amount = advance.get('received_amount', 0)
@@ -305,7 +305,6 @@ if advance_payments:
                                                 ap['status'] = 'Completed'
                                                 ap['completion_date'] = completion_datetime
                                                 ap['final_payment_method'] = payment_type
-                                                ap['is_editable'] = False  # Make non-editable after completion
                                             else:
                                                 ap['status'] = 'Partially Received'
                                             break
@@ -382,7 +381,7 @@ if advance_payments:
                                     st.rerun()
                 
                 # Management actions row - Only show for non-completed advances
-                if advance['status'] != 'Completed' and advance.get('is_editable', True) != False:
+                if advance['status'] != 'Completed':
                     st.markdown("**⚙️ Management Actions**")
                     col1, col2, col3, col4 = st.columns(4)
                     
@@ -416,7 +415,6 @@ if advance_payments:
                                                 ap['completion_date'] = completion_datetime
                                                 ap['received_amount'] = ap.get('remaining_amount', 0)
                                                 ap['final_payment_method'] = payment_method
-                                                ap['is_editable'] = False  # Make non-editable after completion
                                                 break
                                         selected_hotel = st.session_state.get('selected_hotel', 'hotel1')
                                         save_data('advance_payments.json', advance_payments, selected_hotel)
