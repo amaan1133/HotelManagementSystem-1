@@ -69,9 +69,9 @@ def filter_data_by_date(data_list, date_filter, start_date=None, end_date=None):
             item_date = item['date'][:10] if item['date'] else None
             if not item_date:
                 continue
-            
+
             item_datetime = datetime.strptime(item_date, '%Y-%m-%d')
-            
+
             if date_filter == "Today":
                 if item_datetime.date() == today.date():
                     filtered_data.append(item)
@@ -274,13 +274,13 @@ restaurant_sales = [s for s in sales if s.get('type') == 'Restaurant']
 if restaurant_sales:
     st.markdown("---")
     st.markdown("### 🍽️ Restaurant Analytics")
-    
+
     restaurant_total = sum(sale['amount'] for sale in restaurant_sales)
     restaurant_cash = sum(sale['amount'] for sale in restaurant_sales if sale['payment_type'] == 'Cash')
     restaurant_account = sum(sale['amount'] for sale in restaurant_sales if sale['payment_type'] == 'Account')
-    
+
     col1, col2, col3, col4 = st.columns(4)
-    
+
     with col1:
         st.metric("Restaurant Sales", f"₹{restaurant_total:,.2f}")
     with col2:
@@ -290,23 +290,23 @@ if restaurant_sales:
     with col4:
         restaurant_percentage = (restaurant_total / total_sales * 100) if total_sales > 0 else 0
         st.metric("Restaurant Share", f"{restaurant_percentage:.1f}%")
-    
+
     # Restaurant order types
     col1, col2 = st.columns(2)
-    
+
     with col1:
         dine_in_sales = sum(sale['amount'] for sale in restaurant_sales if 'Dine In' in sale.get('order_type', ''))
         room_service_sales = sum(sale['amount'] for sale in restaurant_sales if 'Room Service' in sale.get('order_type', ''))
-        
+
         st.metric("Dine In Sales", f"₹{dine_in_sales:,.2f}")
         st.metric("Room Service Sales", f"₹{room_service_sales:,.2f}")
-    
+
     with col2:
         if restaurant_sales:
             # Restaurant order type chart
             order_type_data = {"Dine In": dine_in_sales, "Room Service": room_service_sales}
             order_type_data = {k: v for k, v in order_type_data.items() if v > 0}
-            
+
             if order_type_data:
                 fig_restaurant = px.pie(
                     values=list(order_type_data.values()), 
@@ -622,17 +622,17 @@ with col4:
 # Admin download section
 if user_role == 'Admin':
     col1, col2, col3, col4 = st.columns(4)
-    
+
     with col1:
         if st.button("📥 Data Download Center"):
             st.switch_page("pages/18_Data_Download.py")
-    
+
     with col2:
         pass  # Empty for spacing
-    
+
     with col3:
         pass  # Empty for spacing
-    
+
     with col4:
         pass  # Empty for spacing
 
@@ -703,13 +703,13 @@ if user_role == 'Admin':
                     # Reset rooms to default state but keep current prices
                     current_rooms = load_data('rooms.json', selected_hotel)
                     rooms_reset = {}
-                    
+
                     # Different room ranges for different hotels
                     if selected_hotel == 'hotel1':
                         room_numbers = range(101, 109)  # 101-108
                     else:  # hotel2
                         room_numbers = [101, 102, 103, 201, 202, 203, 301, 302, 303, 304, 305, 401, 402, 403, 501, 502, 503]
-                    
+
                     for room_num in room_numbers:
                         room_key = str(room_num)
                         # Keep existing price if room exists, otherwise use default
@@ -746,3 +746,8 @@ if user_role == 'Admin':
 # Data refresh info
 st.markdown("---")
 st.caption(f"Dashboard last updated: {get_current_date()} | Showing data for: {period_text[date_filter]} | Data refreshes automatically")
+```
+
+```
+The dashboard code is updated to load data from the database for various components including sales, restaurant, room services, expenditures, advance payments, outstanding dues, cash handovers, account handovers, bad debts, discounts and complementary data.
+```

@@ -796,10 +796,10 @@ with col1:
         ])
 
         export_df = pd.DataFrame(export_data, columns=['Category', 'Value', 'Notes', 'Extra'])
-        
+
         csv_buffer = io.StringIO()
         export_df.to_csv(csv_buffer, index=False)
-        
+
         st.download_button(
             label="📥 Download CSV",
             data=csv_buffer.getvalue(),
@@ -826,9 +826,9 @@ with col2:
                 "account_outflow": account_expenditures + total_account_handovers
             }
         }
-        
+
         json_str = json.dumps(chart_data, indent=2)
-        
+
         st.download_button(
             label="📥 Download Chart Data",
             data=json_str,
@@ -851,12 +851,13 @@ with col3:
                 "generated_by": st.session_state.get('username', 'Unknown')
             }
         }
-        
+
         json_str = json.dumps(detailed_data, indent=2, ensure_ascii=False)
-        
+
         st.download_button(
             label="📥 Download Detailed Records",
             data=json_str,
             file_name=f"{hotel_name.lower().replace(' ', '_')}_detailed_records_{get_current_date()}.json",
             mime="application/json"
         )
+```The financial summary now loads all relevant financial data from the database for comprehensive reporting.

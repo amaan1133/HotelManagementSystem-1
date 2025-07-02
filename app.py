@@ -10,9 +10,14 @@ from utils.auth import check_authentication, login_page
 # Initialize database system instead of JSON files
 print("=== INITIALIZING DATABASE SYSTEM ===")
 try:
-    from utils.database_data_manager import initialize_database_system
+    from utils.database_data_manager import initialize_database_system, ensure_database_only_operation
     initialize_database_system()
-    print("Database system initialized successfully")
+    
+    # Ensure database-only operation
+    if ensure_database_only_operation():
+        print("Database system initialized successfully - JSON files disabled")
+    else:
+        print("WARNING: Database system validation failed")
 except Exception as e:
     print(f"Database system initialization failed: {e}")
     # Database initialization is required for the system to work

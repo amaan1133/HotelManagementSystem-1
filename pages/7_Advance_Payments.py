@@ -275,7 +275,7 @@ if advance_payments:
                             with col_pay1:
                                 st.write(f"**Remaining to Collect:** ₹{still_remaining:,.2f}")
                                 st.write(f"**Already Collected:** ₹{received_amount:,.2f}")
-                                payment_amount = st.number_input("Payment Amount", min_value=0.0, max_value=still_remaining, step=100.0, key=f"pay_amt_{advance['id']}")
+                                payment_amount = st.number_input("Payment Amount", min_value=0.0, max_value=float(still_remaining), step=100.0, key=f"pay_amt_{advance['id']}")
                                 payment_type = st.selectbox("Payment Type", ["Cash", "Account", "Discount", "Complementary"], key=f"pay_type_{advance['id']}")
                             with col_pay2:
                                 payment_date = st.date_input("Payment Received Date", value=datetime.now().date(), help="Select the date when payment was received", key=f"pay_date_{advance['id']}")

@@ -278,30 +278,43 @@ class DatabaseManager:
             raise
     
     def load_data_from_db(self, table_name, hotel='hotel1'):
-        """Load data from database table"""
-        try:
-            with self.engine.connect() as conn:
-                query = text(f"SELECT * FROM {table_name} WHERE hotel = :hotel ORDER BY created_at DESC")
-                result = conn.execute(query, {"hotel": hotel})
-                
-                # Convert to list of dictionaries
-                columns = result.keys()
-                data = []
-                for row in result:
-                    row_dict = dict(zip(columns, row))
-                    # Convert datetime objects to strings for compatibility
-                    for key, value in row_dict.items():
-                        if hasattr(value, 'isoformat'):
-                            row_dict[key] = value.isoformat()
-                        elif value is None:
-                            row_dict[key] = None
-                    data.append(row_dict)
-                
-                return data
-                
-        except Exception as e:
-            print(f"Error loading data from {table_name}: {e}")
-            return []
+        """Load data from database table with retry logic"""
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                with self.engine.connect() as conn:
+                    query = text(f"SELECT * FROM {table_name} WHERE hotel = :hotel ORDER BY created_at DESC")
+                    result = conn.execute(query, {"hotel": hotel})
+                    
+                    # Convert to list of dictionaries
+                    columns = result.keys()
+                    data = []
+                    for row in result:
+                        row_dict = dict(zip(columns, row))
+                        # Convert datetime objects to strings for compatibility
+                        for key, value in row_dict.items():
+                            if hasattr(value, 'isoformat'):
+                                row_dict[key] = value.isoformat()
+                            elif hasattr(value, '__float__'):  # Handle Decimal types
+                                row_dict[key] = float(value)
+                            elif value is None:
+                                row_dict[key] = None
+                            else:
+                                row_dict[key] = str(value) if not isinstance(value, (int, float, bool)) else value
+                        data.append(row_dict)
+                    
+                    return data
+                    
+            except Exception as e:
+                print(f"Error loading data from {table_name} (attempt {attempt + 1}): {e}")
+                if attempt < max_retries - 1:
+                    # Recreate engine for next attempt
+                    try:
+                        self.engine = create_engine(self.database_url)
+                    except:
+                        pass
+                else:
+                    return []
     
     def save_data_to_db(self, table_name, data, hotel='hotel1'):
         """Save data to database table"""
@@ -338,27 +351,35 @@ class DatabaseManager:
             return False
     
     def add_record_to_db(self, table_name, record):
-        """Add a single record to database"""
-        try:
-            with self.engine.connect() as conn:
-                # Build column list and values
-                columns = list(record.keys())
-                placeholders = [f":{col}" for col in columns]
-                
-                query = text(f"""
-                    INSERT INTO {table_name} ({', '.join(columns)})
-                    VALUES ({', '.join(placeholders)})
-                    ON CONFLICT (id) DO UPDATE SET
-                    {', '.join([f"{col} = EXCLUDED.{col}" for col in columns if col != 'id'])}
-                """)
-                
-                conn.execute(query, record)
-                conn.commit()
-                return True
-                
-        except Exception as e:
-            print(f"Error adding record to {table_name}: {e}")
-            return False
+        """Add a single record to database with retry logic"""
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                with self.engine.connect() as conn:
+                    # Build column list and values
+                    columns = list(record.keys())
+                    placeholders = [f":{col}" for col in columns]
+                    
+                    query = text(f"""
+                        INSERT INTO {table_name} ({', '.join(columns)})
+                        VALUES ({', '.join(placeholders)})
+                        ON CONFLICT (id) DO UPDATE SET
+                        {', '.join([f"{col} = EXCLUDED.{col}" for col in columns if col != 'id'])}
+                    """)
+                    
+                    conn.execute(query, record)
+                    conn.commit()
+                    return True
+                    
+            except Exception as e:
+                print(f"Error adding record to {table_name} (attempt {attempt + 1}): {e}")
+                if attempt < max_retries - 1:
+                    try:
+                        self.engine = create_engine(self.database_url)
+                    except:
+                        pass
+                else:
+                    return False
     
     def migrate_json_to_db(self):
         """Migration disabled to prevent data mixing between hotels"""

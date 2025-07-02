@@ -8,8 +8,18 @@ from utils.database import DatabaseManager
 # Create global database manager instance
 db_manager = None
 
+def ensure_database_only_operation():
+    """Ensure system operates only with database, no JSON files"""
+    db = get_db_manager()
+    if not db:
+        print("ERROR: Database not available - system requires PostgreSQL database")
+        return False
+    
+    print("✓ Database-only operation confirmed")
+    return True
+
 def get_db_manager():
-    """Get or create database manager instance"""
+    """Get or create database manager instance with reconnection logic"""
     global db_manager
     if db_manager is None:
         try:
@@ -18,6 +28,21 @@ def get_db_manager():
         except Exception as e:
             print(f"Database initialization failed: {e}")
             return None
+    
+    # Test connection and recreate if needed
+    try:
+        if not db_manager.test_connection():
+            print("Database connection lost, reconnecting...")
+            db_manager = DatabaseManager()
+            db_manager.init_tables()
+    except Exception as e:
+        print(f"Database reconnection failed: {e}")
+        try:
+            db_manager = DatabaseManager()
+            db_manager.init_tables()
+        except:
+            return None
+    
     return db_manager
 
 def load_data(filename, hotel='hotel1'):
@@ -91,7 +116,7 @@ def save_data(filename, data, hotel='hotel1'):
         return False
 
 def add_record(filename, record, hotel='hotel1'):
-    """Add a single record to database"""
+    """Add a single record to database with validation"""
     db = get_db_manager()
     if not db:
         return False
@@ -119,8 +144,26 @@ def add_record(filename, record, hotel='hotel1'):
     clean_filename = filename.replace(f'{hotel}_', '')
     table_name = table_mapping.get(clean_filename, clean_filename.replace('.json', ''))
 
-    # Add hotel to record
+    # Add hotel to record and validate data
     record['hotel'] = hotel
+    
+    # Ensure proper date formatting
+    if 'date' in record and record['date']:
+        # Ensure date is in proper format
+        if isinstance(record['date'], str) and len(record['date']) == 10:
+            record['date'] = record['date'] + ' 00:00:00'
+    
+    # Ensure numeric fields are properly typed
+    numeric_fields = ['amount', 'total_amount', 'advance_amount', 'remaining_amount', 
+                     'received_amount', 'original_amount', 'discount_amount', 'final_amount',
+                     'room_value', 'price']
+    
+    for field in numeric_fields:
+        if field in record and record[field] is not None:
+            try:
+                record[field] = float(record[field])
+            except (ValueError, TypeError):
+                record[field] = 0.0
 
     try:
         return db.add_record_to_db(table_name, record)

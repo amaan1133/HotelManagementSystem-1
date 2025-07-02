@@ -166,7 +166,7 @@ if cash_sales:
         col1, col2 = st.columns(2)
 
         with col1:
-            handover_amount = st.number_input("Handover Amount", value=total_cash_to_handover, min_value=0.0)
+            handover_amount = st.number_input("Handover Amount", value=float(total_cash_to_handover), min_value=0.0)
             received_by = st.text_input("Received By", placeholder="Name of person receiving cash")
 
         with col2:
