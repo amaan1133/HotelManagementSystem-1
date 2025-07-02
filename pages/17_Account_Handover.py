@@ -56,7 +56,7 @@ with st.form("account_handover_form"):
         handover_type = st.selectbox("Handover Type", ["Bank Transfer", "Account Balance Transfer", "Other"])
 
     with col2:
-        reference_number = st.text_input("Reference Number", placeholder="Transaction/Reference number", key="ref_number_input")
+        reference_number = st.text_input("Reference Number", placeholder="Transaction/Reference number", key="account_ref_number_1")
         notes = st.text_area("Notes", placeholder="Any additional notes")
 
     if st.form_submit_button("Record Account Handover"):
@@ -93,7 +93,7 @@ with st.form("account_handover_form"):
 
     with col2:
         handover_date = st.date_input("Handover Date")
-        reference_number = st.text_input("Reference Number", placeholder="Transaction/Reference number", key="ref_number_input")
+        reference_number = st.text_input("Reference Number", placeholder="Transaction/Reference number", key="account_ref_number_2")
         notes = st.text_area("Notes", placeholder="Any additional notes")
 
     if st.form_submit_button("Record Account Handover", type="primary"):

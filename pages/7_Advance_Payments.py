@@ -390,63 +390,63 @@ if advance_payments:
                     with col1:
                         # Quick actions for pending advances
                         if advance['status'] in ['Pending', 'Partially Received']:
-                        if st.button(f"✅ Mark Fully Paid", key=f"mark_paid_{advance['id']}", help="Mark as fully received - choose payment type"):
-                            # Show payment type selection for marking as paid
-                            with st.form(f"mark_paid_form_{advance['id']}"):
-                                st.write("**Select how the remaining amount was received:**")
-                                remaining_amt = advance.get('remaining_amount', 0)
-                                received_amount = advance.get('received_amount', 0)
-                                still_remaining = remaining_amt - received_amount
-                                
-                                st.write(f"Amount to be marked as received: ₹{still_remaining:,.2f}")
-                                
-                                payment_method = st.selectbox("Payment Method", 
-                                                            ["Cash", "Account", "Discount", "Complementary"], 
-                                                            key=f"mark_method_{advance['id']}")
-                                completion_date = st.date_input("Date Received", 
-                                                              value=datetime.now().date(), 
-                                                              key=f"mark_date_{advance['id']}")
-                                
-                                if st.form_submit_button("Confirm Mark as Paid"):
-                                    completion_datetime = f"{completion_date} {datetime.now().strftime('%H:%M:%S')}"
+                            if st.button(f"✅ Mark Fully Paid", key=f"mark_paid_{advance['id']}", help="Mark as fully received - choose payment type"):
+                                # Show payment type selection for marking as paid
+                                with st.form(f"mark_paid_form_{advance['id']}"):
+                                    st.write("**Select how the remaining amount was received:**")
+                                    remaining_amt = advance.get('remaining_amount', 0)
+                                    received_amount = advance.get('received_amount', 0)
+                                    still_remaining = remaining_amt - received_amount
                                     
-                                    # Update advance payment
-                                    for ap in advance_payments:
-                                        if ap['id'] == advance['id']:
-                                            ap['status'] = 'Completed'
-                                            ap['completion_date'] = completion_datetime
-                                            ap['full_payment_date'] = str(completion_date)
-                                            ap['received_amount'] = ap.get('remaining_amount', 0)
-                                            ap['final_payment_method'] = payment_method
-                                            ap['is_editable'] = False  # Make non-editable after completion
-                                            break
-                                    selected_hotel = st.session_state.get('selected_hotel', 'hotel1')
-                                    save_data('advance_payments.json', advance_payments, selected_hotel)
+                                    st.write(f"Amount to be marked as received: ₹{still_remaining:,.2f}")
                                     
-                                    # Add to respective section based on payment method
-                                    if payment_method in ["Cash", "Account"]:
-                                        # Add to sales
-                                        sales = load_data('sales.json', selected_hotel)
-                                        new_sale = {
-                                            'id': generate_id(),
-                                            'date': completion_datetime,
-                                            'transaction_date': completion_datetime,
-                                            'type': 'Advance Payment - Final',
-                                            'amount': still_remaining,
-                                            'payment_type': payment_method,
-                                            'customer_name': advance['customer_name'],
-                                            'description': f"Final payment for advance #{advance['id']} - ₹{still_remaining:,.2f} (Originally advanced: {advance['date'][:10]}, Final payment: {str(completion_date)})",
-                                            'original_advance_date': advance['date'][:10],
-                                            'payment_date': str(completion_date),
-                                            'advance_id': advance['id'],
-                                            'status': 'Completed',
-                                            'created_by': st.session_state.get('username', 'Unknown')
-                                        }
-                                        sales.append(new_sale)
-                                        save_data('sales.json', sales, selected_hotel)
-                                        st.success(f"Final payment marked as received and added to {payment_method.lower()} sales!")
+                                    payment_method = st.selectbox("Payment Method", 
+                                                                ["Cash", "Account", "Discount", "Complementary"], 
+                                                                key=f"mark_method_{advance['id']}")
+                                    completion_date = st.date_input("Date Received", 
+                                                                  value=datetime.now().date(), 
+                                                                  key=f"mark_date_{advance['id']}")
                                     
-                                    elif payment_method == "Discount":
+                                    if st.form_submit_button("Confirm Mark as Paid"):
+                                        completion_datetime = f"{completion_date} {datetime.now().strftime('%H:%M:%S')}"
+                                        
+                                        # Update advance payment
+                                        for ap in advance_payments:
+                                            if ap['id'] == advance['id']:
+                                                ap['status'] = 'Completed'
+                                                ap['completion_date'] = completion_datetime
+                                                ap['full_payment_date'] = str(completion_date)
+                                                ap['received_amount'] = ap.get('remaining_amount', 0)
+                                                ap['final_payment_method'] = payment_method
+                                                ap['is_editable'] = False  # Make non-editable after completion
+                                                break
+                                        selected_hotel = st.session_state.get('selected_hotel', 'hotel1')
+                                        save_data('advance_payments.json', advance_payments, selected_hotel)
+                                        
+                                        # Add to respective section based on payment method
+                                        if payment_method in ["Cash", "Account"]:
+                                            # Add to sales
+                                            sales = load_data('sales.json', selected_hotel)
+                                            new_sale = {
+                                                'id': generate_id(),
+                                                'date': completion_datetime,
+                                                'transaction_date': completion_datetime,
+                                                'type': 'Advance Payment - Final',
+                                                'amount': still_remaining,
+                                                'payment_type': payment_method,
+                                                'customer_name': advance['customer_name'],
+                                                'description': f"Final payment for advance #{advance['id']} - ₹{still_remaining:,.2f} (Originally advanced: {advance['date'][:10]}, Final payment: {str(completion_date)})",
+                                                'original_advance_date': advance['date'][:10],
+                                                'payment_date': str(completion_date),
+                                                'advance_id': advance['id'],
+                                                'status': 'Completed',
+                                                'created_by': st.session_state.get('username', 'Unknown')
+                                            }
+                                            sales.append(new_sale)
+                                            save_data('sales.json', sales, selected_hotel)
+                                            st.success(f"Final payment marked as received and added to {payment_method.lower()} sales!")
+                                        
+                                        elif payment_method == "Discount":
                                         # Add to discounts
                                         discounts = load_data('discounts.json', selected_hotel)
                                         new_discount = {
