@@ -1,0 +1,15 @@
+[
+  {
+    "id": "test123",
+    "date": "2025-07-01",
+    "customer_name": "Test Customer",
+    "description": "Test Historical Sale",
+    "amount": 1500.0,
+    "payment_type": "Cash",
+    "type": "Room Booking",
+    "room_number": "101",
+    "status": "Completed",
+    "created_by": "admin",
+    "is_historical": true
+  }
+]

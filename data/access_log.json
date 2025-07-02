@@ -1,0 +1,100 @@
+[
+  {
+    "timestamp": "2025-07-01T14:39:49.873147",
+    "operation": "save",
+    "filename": "hotel2_rooms.json",
+    "hotel": "hotel2",
+    "thread_id": 140140032263872
+  },
+  {
+    "timestamp": "2025-07-01T22:45:18.338257",
+    "operation": "save",
+    "filename": "hotel2_rooms.json",
+    "hotel": "hotel2",
+    "thread_id": 140520122742464
+  },
+  {
+    "timestamp": "2025-07-01T23:00:21.853848",
+    "operation": "save",
+    "filename": "hotel1_restaurant.json",
+    "hotel": "hotel1",
+    "thread_id": 139713806505664
+  },
+  {
+    "timestamp": "2025-07-01T23:00:21.860287",
+    "operation": "save",
+    "filename": "hotel1_restaurant.json",
+    "hotel": "hotel1",
+    "thread_id": 139713806505664
+  },
+  {
+    "timestamp": "2025-07-01T23:05:05.424101",
+    "operation": "save",
+    "filename": "hotel1_restaurant.json",
+    "hotel": "hotel1",
+    "thread_id": 140075239204544
+  },
+  {
+    "timestamp": "2025-07-01T23:05:05.437419",
+    "operation": "save",
+    "filename": "hotel1_sales.json",
+    "hotel": "hotel1",
+    "thread_id": 140075239204544
+  },
+  {
+    "timestamp": "2025-07-01T23:09:31.489562",
+    "operation": "save",
+    "filename": "hotel1_restaurant.json",
+    "hotel": "hotel1",
+    "thread_id": 140165389481664
+  },
+  {
+    "timestamp": "2025-07-01T23:09:31.503795",
+    "operation": "save",
+    "filename": "hotel1_sales.json",
+    "hotel": "hotel1",
+    "thread_id": 140165389481664
+  },
+  {
+    "timestamp": "2025-07-01T23:16:00.124574",
+    "operation": "save",
+    "filename": "hotel2_sales.json",
+    "hotel": "hotel2",
+    "thread_id": 140424022849216
+  },
+  {
+    "timestamp": "2025-07-01T23:18:32.773847",
+    "operation": "save",
+    "filename": "hotel2_sales.json",
+    "hotel": "hotel2",
+    "thread_id": 140423733438144
+  },
+  {
+    "timestamp": "2025-07-01T23:20:51.077030",
+    "operation": "save",
+    "filename": "hotel2_sales.json",
+    "hotel": "hotel2",
+    "thread_id": 140423733438144
+  },
+  {
+    "timestamp": "2025-07-01T23:22:28.906672",
+    "operation": "save",
+    "filename": "hotel2_sales.json",
+    "hotel": "hotel2",
+    "thread_id": 140423733438144
+  },
+  {
+    "timestamp": "2025-07-01T23:23:34.555849",
+    "operation": "save",
+    "filename": "hotel2_sales.json",
+    "hotel": "hotel2",
+    "thread_id": 140423733438144
+  },
+  {
+    "timestamp": "2025-07-02T04:03:14.755006",
+    "operation": "save",
+    "filename": "hotel2_rooms.json",
+    "hotel": "hotel2",
+    "thread_id": 140215025915584
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "id": "5797d7c4",
+    "date": "2025-06-27 16:04:41",
+    "customer_name": "Amaan Farooq",
+    "customer_contact": "U7",
+    "customer_email": "amaanf660@gmail.com",
+    "room_number": "Room 203",
+    "booking_date": "2025-06-29",
+    "advance_amount": 300.0,
+    "remaining_amount": 700.0,
+    "total_amount": 1000.0,
+    "amount": 1000.0,
+    "payment_method": "Cash",
+    "cheque_number": "",
+    "cheque_date": null,
+    "transaction_id": "",
+    "purpose": "Room Booking",
+    "notes": "",
+    "status": "Pending",
+    "received_amount": 0,
+    "created_by": "Hello"
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "94a4c189",
+    "date": "2025-06-30 15:48:39",
+    "transaction_date": "2025-06-30 15:48:39",
+    "type": "Advance Payment - Complete",
+    "amount": 800.0,
+    "payment_type": "Account",
+    "customer_name": "Amaan Farooq",
+    "description": "Complete payment for advance #c5cead98 - Total: \u20b9800.00 (Originally advanced: 2025-06-27, Completed: 2025-06-30)",
+    "original_advance_date": "2025-06-27",
+    "completion_date": "2025-06-30",
+    "advance_id": "c5cead98",
+    "status": "Completed",
+    "created_by": "Hello"
+  }
+]

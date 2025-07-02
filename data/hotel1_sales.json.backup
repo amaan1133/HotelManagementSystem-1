@@ -1,0 +1,12 @@
+[
+  {
+    "id": "bdc1feeb",
+    "date": "2025-07-01",
+    "description": "Restaurant Sale - order_details\": \"rajma-----168\\nRice ----- 240\\nRohan josh----523\\nTawa roti------63\\nWater--------30 total 1024 received 1020 from customer ",
+    "amount": 1024.0,
+    "payment_type": "Cash",
+    "room_number": "",
+    "created_by": "admin",
+    "is_historical": true
+  }
+]

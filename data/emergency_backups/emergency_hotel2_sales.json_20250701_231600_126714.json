@@ -1,0 +1,19 @@
+[
+  {
+    "id": "0edb076c",
+    "date": "2025-07-01 00:00:00",
+    "type": "Restaurant",
+    "amount": 1024.0,
+    "payment_type": "Cash",
+    "customer_name": "Any",
+    "customer_phone": "Any",
+    "description": "Saz Valley Bhahrwah Restaurant - Restaurant - Dine In",
+    "order_details": "order_details\": \"rajma-----168\\nRice ----- 240\\nRohan josh----523\\nTawa roti------63\\nWater--------30",
+    "room_number": null,
+    "special_instructions": "Total 1024 received 1020 from customer ",
+    "restaurant_name": "Saz Valley Bhahrwah",
+    "order_type": "Restaurant - Dine In",
+    "status": "Completed",
+    "created_by": "SazB"
+  }
+]

@@ -1,0 +1,74 @@
+{
+  "101": {
+    "room_number": "101",
+    "status": "Available",
+    "type": "Standard",
+    "price": 2000,
+    "current_guest": null,
+    "checkin_date": null,
+    "checkout_date": null
+  },
+  "102": {
+    "room_number": "102",
+    "status": "Available",
+    "type": "Standard",
+    "price": 2000,
+    "current_guest": null,
+    "checkin_date": null,
+    "checkout_date": null
+  },
+  "103": {
+    "room_number": "103",
+    "status": "Available",
+    "type": "Standard",
+    "price": 3100,
+    "current_guest": null,
+    "checkin_date": null,
+    "checkout_date": null
+  },
+  "104": {
+    "room_number": "104",
+    "status": "Available",
+    "type": "Standard",
+    "price": 2000,
+    "current_guest": null,
+    "checkin_date": null,
+    "checkout_date": null
+  },
+  "105": {
+    "room_number": "105",
+    "status": "Available",
+    "type": "Standard",
+    "price": 2000,
+    "current_guest": null,
+    "checkin_date": null,
+    "checkout_date": null
+  },
+  "106": {
+    "room_number": "106",
+    "status": "Available",
+    "type": "Standard",
+    "price": 2000,
+    "current_guest": null,
+    "checkin_date": null,
+    "checkout_date": null
+  },
+  "107": {
+    "room_number": "107",
+    "status": "Available",
+    "type": "Standard",
+    "price": 2000,
+    "current_guest": null,
+    "checkin_date": null,
+    "checkout_date": null
+  },
+  "108": {
+    "room_number": "108",
+    "status": "Available",
+    "type": "Standard",
+    "price": 2000,
+    "current_guest": null,
+    "checkin_date": null,
+    "checkout_date": null
+  }
+}

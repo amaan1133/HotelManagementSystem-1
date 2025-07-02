@@ -1,0 +1,10 @@
+{
+  "hotel1": {
+    "name": "Saz Valley Kistwar",
+    "rooms_range": "101-108"
+  },
+  "hotel2": {
+    "name": "Saz Valley Bhaderwah",
+    "rooms_range": "101-103, 201-203, 301-305, 401-403, 501-503 (17 rooms)"
+  }
+}

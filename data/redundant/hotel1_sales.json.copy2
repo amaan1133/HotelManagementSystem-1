@@ -1,0 +1,28 @@
+[
+  {
+    "id": "test123",
+    "date": "2025-07-01",
+    "customer_name": "Test Customer",
+    "description": "Test Historical Sale",
+    "amount": 1500.0,
+    "payment_type": "Cash",
+    "type": "Room Booking",
+    "room_number": "101",
+    "status": "Completed",
+    "created_by": "admin",
+    "is_historical": true
+  },
+  {
+    "id": "d6f5f0f0",
+    "date": "2025-07-01",
+    "customer_name": "Historical Entry",
+    "description": "Restaurant Sale - order_details\": \"rajma-----168\\nRice ----- 240\\nRohan josh----523\\nTawa roti------63\\nWater--------30 total 1024.   Received 1020 from customer ",
+    "amount": 1024.0,
+    "payment_type": "Cash",
+    "room_number": "",
+    "type": "Historical Sale",
+    "status": "Completed",
+    "created_by": "SazB",
+    "is_historical": true
+  }
+]
