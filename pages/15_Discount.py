@@ -75,6 +75,7 @@ with st.form("add_discount_form"):
                 'date': get_current_datetime(),
                 'customer_name': customer_name,
                 'amount': amount,
+                'original_amount': amount,
                 'discount_type': discount_type,
                 'reason': reason or f"{discount_type} discount applied",
                 'reference_id': reference_id,

@@ -287,11 +287,20 @@ class DatabaseManager:
                         status VARCHAR(20) DEFAULT 'Pending',
                         received_amount DECIMAL(10,2) DEFAULT 0,
                         full_payment_date DATE,
+                        completion_date TIMESTAMP,
+                        final_payment_method VARCHAR(20),
                         hotel VARCHAR(20) DEFAULT 'hotel1',
                         created_by VARCHAR(50),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """))
+                
+                # Add missing columns for advance_payments
+                try:
+                    conn.execute(text("ALTER TABLE advance_payments ADD COLUMN IF NOT EXISTS completion_date TIMESTAMP"))
+                    conn.execute(text("ALTER TABLE advance_payments ADD COLUMN IF NOT EXISTS final_payment_method VARCHAR(20)"))
+                except:
+                    pass
                 
                 # Outstanding Dues table
                 conn.execute(text("""
@@ -378,6 +387,7 @@ class DatabaseManager:
                         date TIMESTAMP NOT NULL,
                         customer_name VARCHAR(100),
                         amount DECIMAL(10,2) NOT NULL,
+                        original_amount DECIMAL(10,2),
                         discount_type VARCHAR(50),
                         reason VARCHAR(200),
                         reference_id VARCHAR(50),
@@ -390,6 +400,12 @@ class DatabaseManager:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """))
+                
+                # Add missing columns for discounts
+                try:
+                    conn.execute(text("ALTER TABLE discounts ADD COLUMN IF NOT EXISTS original_amount DECIMAL(10,2)"))
+                except:
+                    pass
                 
                 # Uploaded Bills table
                 conn.execute(text("""

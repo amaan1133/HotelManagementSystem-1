@@ -239,14 +239,24 @@ if advance_payments:
                     st.write(f"**Room:** {advance.get('room_number', 'Not Selected')}")
                     st.write(f"**Booking Date:** {advance.get('booking_date', 'Not Set')}")
                     st.write(f"**Purpose:** {advance['purpose']}")
-                    st.write(f"**Status:** {advance['status']}")
+                    # Status with color coding
+                    status_color = "🟢" if advance['status'] == 'Completed' else "🟡" if advance['status'] == 'Partially Received' else "🔴"
+                    st.write(f"**Status:** {status_color} {advance['status']}")
                     
-                    # Show payment progress
-                    received_amount = advance.get('received_amount', 0)
-                    if received_amount > 0:
-                        st.write(f"**Additional Received:** ₹{received_amount:,.2f}")
-                        remaining_to_pay = remaining_amt - received_amount
-                        st.write(f"**Still Remaining:** ₹{remaining_to_pay:,.2f}")
+                    # Show completion details for completed advances
+                    if advance['status'] == 'Completed':
+                        if advance.get('final_payment_method'):
+                            st.write(f"**Final Payment Method:** {advance['final_payment_method']}")
+                        if advance.get('completion_date'):
+                            st.write(f"**Completed On:** {advance['completion_date'][:10]}")
+                        st.write("✅ **Fully Settled - No Further Action Required**")
+                    else:
+                        # Show payment progress for pending advances
+                        received_amount = advance.get('received_amount', 0)
+                        if received_amount > 0:
+                            st.write(f"**Additional Received:** ₹{received_amount:,.2f}")
+                            remaining_to_pay = remaining_amt - received_amount
+                            st.write(f"**Still Remaining:** ₹{remaining_to_pay:,.2f}")
                     
                     st.write(f"**Created By:** {advance.get('created_by', 'Unknown')}")
                 
@@ -261,8 +271,8 @@ if advance_payments:
                 if advance.get('notes'):
                     st.write(f"**Notes:** {advance['notes']}")
                 
-                # Payment Collection - Available to ALL users
-                if advance['status'] in ['Pending', 'Partially Received']:
+                # Payment Collection - Only show for non-completed advances
+                if advance['status'] in ['Pending', 'Partially Received'] and not advance.get('is_editable', True) == False:
                     # Handle new structure with custom remaining amounts
                     remaining_amt = advance.get('remaining_amount', 0)
                     received_amount = advance.get('received_amount', 0)
@@ -292,9 +302,11 @@ if advance_payments:
                                         if ap['id'] == advance['id']:
                                             ap['received_amount'] = new_received
                                             if new_received >= remaining_amt:
-                                                ap['status'] = 'Completed'  # Changed from 'Fully Received' to 'Completed'
-                                                ap['completion_date'] = completion_datetime  # Track completion date
-                                                ap['full_payment_date'] = str(payment_date)  # Date only for display
+                                                ap['status'] = 'Completed'
+                                                ap['completion_date'] = completion_datetime
+                                                ap['full_payment_date'] = str(payment_date)
+                                                ap['final_payment_method'] = payment_type
+                                                ap['is_editable'] = False  # Make non-editable after completion
                                             else:
                                                 ap['status'] = 'Partially Received'
                                             break
@@ -332,6 +344,7 @@ if advance_payments:
                                             'date': completion_datetime,
                                             'customer_name': advance['customer_name'],
                                             'amount': payment_amount,
+                                            'original_amount': payment_amount,
                                             'discount_type': 'Advance Payment Discount',
                                             'reason': f"Discount applied to advance payment #{advance['id']} - partial amount waived",
                                             'reference_id': advance['id'],
@@ -369,13 +382,14 @@ if advance_payments:
                                         st.success(f"{success_msg}. Remaining: ₹{remaining_amt - new_received:,.2f}")
                                     st.rerun()
                 
-                # Management actions row
-                st.markdown("**⚙️ Management Actions**")
-                col1, col2, col3, col4 = st.columns(4)
-                
-                with col1:
-                    # Quick actions for pending advances
-                    if advance['status'] in ['Pending', 'Partially Received']:
+                # Management actions row - Only show for non-completed advances
+                if advance['status'] != 'Completed' and advance.get('is_editable', True) != False:
+                    st.markdown("**⚙️ Management Actions**")
+                    col1, col2, col3, col4 = st.columns(4)
+                    
+                    with col1:
+                        # Quick actions for pending advances
+                        if advance['status'] in ['Pending', 'Partially Received']:
                         if st.button(f"✅ Mark Fully Paid", key=f"mark_paid_{advance['id']}", help="Mark as fully received - choose payment type"):
                             # Show payment type selection for marking as paid
                             with st.form(f"mark_paid_form_{advance['id']}"):
@@ -399,11 +413,12 @@ if advance_payments:
                                     # Update advance payment
                                     for ap in advance_payments:
                                         if ap['id'] == advance['id']:
-                                            ap['status'] = 'Completed'  # Changed from 'Fully Received' to 'Completed'
+                                            ap['status'] = 'Completed'
                                             ap['completion_date'] = completion_datetime
                                             ap['full_payment_date'] = str(completion_date)
                                             ap['received_amount'] = ap.get('remaining_amount', 0)
                                             ap['final_payment_method'] = payment_method
+                                            ap['is_editable'] = False  # Make non-editable after completion
                                             break
                                     selected_hotel = st.session_state.get('selected_hotel', 'hotel1')
                                     save_data('advance_payments.json', advance_payments, selected_hotel)
@@ -439,6 +454,7 @@ if advance_payments:
                                             'date': completion_datetime,
                                             'customer_name': advance['customer_name'],
                                             'amount': still_remaining,
+                                            'original_amount': still_remaining,
                                             'discount_type': 'Advance Payment Discount',
                                             'reason': f"Discount applied to advance payment #{advance['id']} - remaining amount waived",
                                             'reference_id': advance['id'],
