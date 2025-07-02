@@ -203,8 +203,8 @@ if advance_payments:
             """, unsafe_allow_html=True)
             
             # Show completion date if completed, otherwise advance date
-            if advance['status'] == 'Completed' and advance.get('full_payment_date'):
-                display_date = advance['full_payment_date']
+            if advance['status'] == 'Completed' and advance.get('completion_date'):
+                display_date = advance['completion_date'][:10] if advance['completion_date'] else advance['date'][:10] if advance['date'] else 'N/A'
                 date_label = f"{display_date} (Completed)"
             else:
                 display_date = advance['date'][:10] if advance['date'] else 'N/A'
@@ -216,8 +216,8 @@ if advance_payments:
                 
                 with col1:
                     st.write(f"**Advance Date:** {advance['date'][:10] if advance['date'] else 'N/A'}")
-                    if advance['status'] == 'Completed' and advance.get('full_payment_date'):
-                        st.write(f"**Completion Date:** {advance['full_payment_date']}")
+                    if advance['status'] == 'Completed' and advance.get('completion_date'):
+                        st.write(f"**Completion Date:** {advance['completion_date'][:10]}")
                     st.write(f"**Customer:** {advance['customer_name']}")
                     st.write(f"**Contact:** {advance['customer_contact']}")
                     st.write(f"**Email:** {advance.get('customer_email', 'N/A')}")
@@ -304,7 +304,6 @@ if advance_payments:
                                             if new_received >= remaining_amt:
                                                 ap['status'] = 'Completed'
                                                 ap['completion_date'] = completion_datetime
-                                                ap['full_payment_date'] = str(payment_date)
                                                 ap['final_payment_method'] = payment_type
                                                 ap['is_editable'] = False  # Make non-editable after completion
                                             else:
@@ -415,7 +414,6 @@ if advance_payments:
                                             if ap['id'] == advance['id']:
                                                 ap['status'] = 'Completed'
                                                 ap['completion_date'] = completion_datetime
-                                                ap['full_payment_date'] = str(completion_date)
                                                 ap['received_amount'] = ap.get('remaining_amount', 0)
                                                 ap['final_payment_method'] = payment_method
                                                 ap['is_editable'] = False  # Make non-editable after completion
