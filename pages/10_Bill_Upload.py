@@ -61,7 +61,7 @@ with st.form("upload_bill_form"):
     # Room number (optional) - dynamic based on selected hotel
     selected_hotel = st.session_state.get('selected_hotel', 'hotel1')
     rooms_list = load_data('rooms.json', selected_hotel)
-    
+
     # Convert list to dictionary if needed
     if isinstance(rooms_list, list):
         rooms = {}
@@ -70,7 +70,7 @@ with st.form("upload_bill_form"):
                 rooms[room['room_number']] = room
     else:
         rooms = rooms_list if rooms_list else {}
-    
+
     all_rooms = [f"Room {k}" for k in sorted(rooms.keys(), key=lambda x: int(x))] if rooms else []
     room_options = ["None"] + all_rooms
     room_number = st.selectbox("Room Number (if applicable)", room_options)

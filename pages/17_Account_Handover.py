@@ -49,12 +49,12 @@ st.markdown("### Record Account Handover")
 
 with st.form("account_handover_form"):
     col1, col2 = st.columns(2)
-    
+
     with col1:
         handover_amount = st.number_input("Handover Amount", value=float(account_balance) if account_balance > 0 else 0.0, min_value=0.0)
         received_by = st.text_input("Received By", placeholder="Name of person receiving account balance")
         handover_type = st.selectbox("Handover Type", ["Bank Transfer", "Account Balance Transfer", "Other"])
-    
+
     with col2:
         reference_number = st.text_input("Reference Number", placeholder="Transaction/Reference number")
         notes = st.text_area("Notes", placeholder="Any additional notes")
@@ -75,7 +75,7 @@ with st.form("account_handover_form"):
                 'notes': notes,
                 'created_by': st.session_state.get('username', 'Unknown')
             }
-            
+
             if add_record('account_handovers.json', new_handover, selected_hotel):
                 st.success(f"Account handover of ₹{handover_amount:,.2f} recorded for {received_by}")
             else:

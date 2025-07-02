@@ -162,14 +162,15 @@ with st.form("add_service_form"):
                 'special_instructions': special_instructions,
                 'priority': priority,
                 'status': 'Pending',
-                'created_by': st.session_state.get('username', 'Unknown')
+                'created_by': st.session_state.get('username', 'Unknown'),
+                'hotel': selected_hotel
             }
 
-            room_services.append(new_service)
-            selected_hotel = st.session_state.get('selected_hotel', 'hotel1')
-            save_data('room_services.json', room_services, selected_hotel)
-            st.success("Room service request added successfully!")
-            st.rerun()
+            if add_record('room_services.json', new_service, selected_hotel):
+                st.success("Room service request added successfully!")
+                st.rerun()
+            else:
+                st.error("Failed to add room service. Please try again.")
 
 st.markdown("---")
 
@@ -384,4 +385,4 @@ with col3:
 
 with col4:
     if st.button("🧹 Room Cleaning", key="quick_cleaning"):
-        st.info("Quick room cleaning - Use form above to complete")
+        st.info("Quick room cleaning service - Use form above to complete")
