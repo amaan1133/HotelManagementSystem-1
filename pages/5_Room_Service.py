@@ -112,8 +112,22 @@ with st.form("add_service_form"):
     col1, col2 = st.columns(2)
 
     with col1:
-        # Get all rooms for dropdown (regardless of occupancy status)
-        all_rooms = [f"Room {k}" for k in sorted(rooms.keys(), key=lambda x: int(x))]
+        # Get all rooms for dropdown - load from current hotel and show all rooms
+        selected_hotel = st.session_state.get('selected_hotel', 'hotel1')
+        rooms_data = load_data('rooms.json', selected_hotel)
+        
+        # Handle both dict and list formats
+        if isinstance(rooms_data, dict):
+            all_rooms = [f"Room {k}" for k in sorted(rooms_data.keys(), key=lambda x: int(x))]
+        elif isinstance(rooms_data, list):
+            all_rooms = [f"Room {room.get('room_number', room.get('id', i+101))}" for i, room in enumerate(rooms_data)]
+        else:
+            # Fallback room numbers based on hotel
+            if selected_hotel == 'hotel1':
+                all_rooms = [f"Room {i}" for i in range(101, 109)]  # 101-108
+            else:  # hotel2
+                all_rooms = [f"Room {i}" for i in ['101', '102', '103', '201', '202', '203', '301', '302', '303', '304', '305', '401', '402', '403', '501', '502', '503']]
+        
         selected_room = st.selectbox("Room Number", all_rooms)
 
         service_category = st.selectbox("Service Category", list(service_menu.keys()))

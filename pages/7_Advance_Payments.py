@@ -449,7 +449,7 @@ if advance_payments:
                                         elif payment_method == "Discount":
                                             # Add to discounts
                                             discounts = load_data('discounts.json', selected_hotel)
-                                        new_discount = {
+                                            new_discount = {
                                                 'id': generate_id(),
                                                 'date': completion_datetime,
                                                 'customer_name': advance['customer_name'],
@@ -468,7 +468,7 @@ if advance_payments:
                                             st.success(f"Remaining amount marked as discount and added to discount records!")
                                         
                                         elif payment_method == "Complementary":
-                                        # Add to complementary records
+                                            # Add to complementary records
                                             complementary_records = load_data('complementary_records.json', selected_hotel)
                                             new_comp = {
                                                 'id': generate_id(),
