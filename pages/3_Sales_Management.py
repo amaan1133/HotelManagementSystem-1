@@ -157,15 +157,18 @@ with st.form("add_sale_form"):
     with col2:
         customer_name = st.text_input("Customer Name", placeholder="Enter customer name")
         description = st.text_area("Description", placeholder="Sale description")
-        # Get all rooms for selected hotel
+        # Get all rooms for selected hotel (regardless of occupancy status)
         if isinstance(rooms, dict):
             all_rooms = [f"Room {k}" for k in sorted(rooms.keys(), key=lambda x: int(x))]
         elif isinstance(rooms, list):
             # If rooms is a list of room objects, extract room numbers
             all_rooms = [f"Room {room.get('room_number', room.get('id', i+101))}" for i, room in enumerate(rooms)]
         else:
-            # Default room numbers
-            all_rooms = [f"Room {i}" for i in range(101, 109)]
+            # Default room numbers based on selected hotel
+            if selected_hotel == 'hotel1':
+                all_rooms = [f"Room {i}" for i in range(101, 109)]  # 101-108
+            else:  # hotel2
+                all_rooms = [f"Room {i}" for i in ['101', '102', '103', '201', '202', '203', '301', '302', '303', '304', '305', '401', '402', '403', '501', '502', '503']]
         room_number = st.selectbox("Room Number (if applicable)", 
                                  ["None"] + all_rooms)
 

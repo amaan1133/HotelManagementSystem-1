@@ -112,15 +112,9 @@ with st.form("add_service_form"):
     col1, col2 = st.columns(2)
 
     with col1:
-        # Get occupied rooms for dropdown
-        occupied_rooms = [f"Room {k}" for k, v in sorted(rooms.items(), key=lambda x: int(x[0])) if v['status'] == 'Occupied']
-        if occupied_rooms:
-            selected_room = st.selectbox("Room Number", occupied_rooms)
-        else:
-            st.warning("No occupied rooms available")
-            # Show all rooms for selected hotel when none are occupied
-            all_rooms = [f"Room {k}" for k in sorted(rooms.keys(), key=lambda x: int(x))]
-            selected_room = st.selectbox("Room Number", all_rooms)
+        # Get all rooms for dropdown (regardless of occupancy status)
+        all_rooms = [f"Room {k}" for k in sorted(rooms.keys(), key=lambda x: int(x))]
+        selected_room = st.selectbox("Room Number", all_rooms)
 
         service_category = st.selectbox("Service Category", list(service_menu.keys()))
 

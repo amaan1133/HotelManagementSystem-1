@@ -447,46 +447,46 @@ if advance_payments:
                                             st.success(f"Final payment marked as received and added to {payment_method.lower()} sales!")
                                         
                                         elif payment_method == "Discount":
-                                        # Add to discounts
-                                        discounts = load_data('discounts.json', selected_hotel)
+                                            # Add to discounts
+                                            discounts = load_data('discounts.json', selected_hotel)
                                         new_discount = {
-                                            'id': generate_id(),
-                                            'date': completion_datetime,
-                                            'customer_name': advance['customer_name'],
-                                            'amount': still_remaining,
-                                            'original_amount': still_remaining,
-                                            'discount_type': 'Advance Payment Discount',
-                                            'reason': f"Discount applied to advance payment #{advance['id']} - remaining amount waived",
-                                            'reference_id': advance['id'],
-                                            'percentage': 0,
-                                            'original_advance_date': advance['date'][:10],
-                                            'advance_id': advance['id'],
-                                            'created_by': st.session_state.get('username', 'Unknown')
-                                        }
-                                        discounts.append(new_discount)
-                                        save_data('discounts.json', discounts, selected_hotel)
-                                        st.success(f"Remaining amount marked as discount and added to discount records!")
-                                    
-                                    elif payment_method == "Complementary":
+                                                'id': generate_id(),
+                                                'date': completion_datetime,
+                                                'customer_name': advance['customer_name'],
+                                                'amount': still_remaining,
+                                                'original_amount': still_remaining,
+                                                'discount_type': 'Advance Payment Discount',
+                                                'reason': f"Discount applied to advance payment #{advance['id']} - remaining amount waived",
+                                                'reference_id': advance['id'],
+                                                'percentage': 0,
+                                                'original_advance_date': advance['date'][:10],
+                                                'advance_id': advance['id'],
+                                                'created_by': st.session_state.get('username', 'Unknown')
+                                            }
+                                            discounts.append(new_discount)
+                                            save_data('discounts.json', discounts, selected_hotel)
+                                            st.success(f"Remaining amount marked as discount and added to discount records!")
+                                        
+                                        elif payment_method == "Complementary":
                                         # Add to complementary records
-                                        complementary_records = load_data('complementary_records.json', selected_hotel)
-                                        new_comp = {
-                                            'id': generate_id(),
-                                            'date': completion_datetime,
-                                            'customer_name': advance['customer_name'],
-                                            'amount': still_remaining,
-                                            'type': 'Advance Payment Complementary',
-                                            'reason': f"Complementary waiver for advance payment #{advance['id']} - remaining amount waived",
-                                            'reference_id': advance['id'],
-                                            'original_advance_date': advance['date'][:10],
-                                            'advance_id': advance['id'],
-                                            'created_by': st.session_state.get('username', 'Unknown')
-                                        }
-                                        complementary_records.append(new_comp)
-                                        save_data('complementary_records.json', complementary_records, selected_hotel)
-                                        st.success(f"Remaining amount marked as complementary and added to complementary records!")
-                                    
-                                    st.rerun()
+                                            complementary_records = load_data('complementary_records.json', selected_hotel)
+                                            new_comp = {
+                                                'id': generate_id(),
+                                                'date': completion_datetime,
+                                                'customer_name': advance['customer_name'],
+                                                'amount': still_remaining,
+                                                'type': 'Advance Payment Complementary',
+                                                'reason': f"Complementary waiver for advance payment #{advance['id']} - remaining amount waived",
+                                                'reference_id': advance['id'],
+                                                'original_advance_date': advance['date'][:10],
+                                                'advance_id': advance['id'],
+                                                'created_by': st.session_state.get('username', 'Unknown')
+                                            }
+                                            complementary_records.append(new_comp)
+                                            save_data('complementary_records.json', complementary_records, selected_hotel)
+                                            st.success(f"Remaining amount marked as complementary and added to complementary records!")
+                                        
+                                        st.rerun()
                 
                 with col2:
                     if advance['status'] in ['Pending', 'Partially Received']:

@@ -84,37 +84,7 @@ with st.form("account_handover_form"):
             else:
                 st.error("Failed to record account handover")
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        handover_amount = st.number_input("Handover Amount", value=float(account_balance) if account_balance > 0 else 0.0, min_value=0.0, step=100.0)
-        received_by = st.text_input("Received By", placeholder="Name of person/department receiving account")
-        handover_type = st.selectbox("Handover Type", ["Bank Transfer", "Account Settlement", "Management Transfer", "Other"])
-
-    with col2:
-        handover_date = st.date_input("Handover Date")
-        reference_number = st.text_input("Reference Number", placeholder="Transaction/Reference number", key="account_ref_number_2")
-        notes = st.text_area("Notes", placeholder="Any additional notes")
-
-    if st.form_submit_button("Record Account Handover", type="primary"):
-        if received_by and handover_amount > 0:
-            new_handover = {
-                'id': generate_id(),
-                'date': get_current_datetime(),
-                'handover_date': str(handover_date),
-                'amount': handover_amount,
-                'received_by': received_by,
-                'handover_type': handover_type,
-                'reference_number': reference_number,
-                'notes': notes,
-                'handed_by': st.session_state.get('username', 'Unknown')
-            }
-            account_handovers.append(new_handover)
-            save_data('account_handovers.json', account_handovers, selected_hotel)
-            st.success(f"Account handover of ₹{handover_amount:,.2f} recorded successfully!")
-            st.rerun()
-        else:
-            st.error("Please enter valid amount and receiver name")
+    
 
 st.markdown("---")
 
